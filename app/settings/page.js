@@ -138,7 +138,8 @@ export default function SettingsPage() {
         <section className="card p-6">
           <h2 className="font-display font-semibold text-lg text-ink-900 mb-1">Motivational quotes</h2>
           <p className="text-ink-500 text-sm">
-            Auto-curated — a new one shows up each day, no input needed.
+            Auto-curated from a pool of 600+ lines — a new random one shows up every time you open
+            the dashboard, no input needed.
           </p>
         </section>
       </div>

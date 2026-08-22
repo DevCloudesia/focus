@@ -75,18 +75,22 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Liquid glass: translucent, blurred, soft-edged, gently luminous. Flex
-   column + height:100% so a card dropped into a fixed-height grid tile
-   (see .orbit-grid) fills it properly instead of shrink-wrapping to
-   content and leaving a "tragic" leftover gap — harmless everywhere else,
-   since height:100% of an auto-height ancestor just resolves to auto. */
+/* Liquid glass, Apple-style: a bright specular line along the top edge,
+   a soft inner glow, heavy blur+saturation so the background actually
+   reads through, and a big soft corner radius. Flex column + height:100%
+   so a card dropped into a fixed-height grid tile (see .orbit-grid) fills
+   it properly instead of shrink-wrapping to content and leaving a
+   "tragic" leftover gap — harmless everywhere else, since height:100% of
+   an auto-height ancestor just resolves to auto. */
 .card {
-  background: rgba(255, 255, 255, 0.62);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 1.75rem;
-  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) inset, 0 8px 32px -12px rgba(88, 60, 180, 0.18);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.48) 55%, rgba(255, 255, 255, 0.58));
+  backdrop-filter: blur(36px) saturate(180%);
+  -webkit-backdrop-filter: blur(36px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 2rem;
+  box-shadow: 0 1.5px 0 rgba(255, 255, 255, 0.95) inset, 0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+    0 -20px 30px -26px rgba(255, 255, 255, 0.6) inset, 0 24px 50px -22px rgba(88, 60, 180, 0.26),
+    0 4px 14px -6px rgba(24, 26, 32, 0.07);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -104,17 +108,20 @@ body {
 }
 
 .chip {
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.4));
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 999px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 4px 14px -7px rgba(24, 26, 32, 0.12);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(135deg, var(--accent-a), var(--accent-b));
   color: #ffffff;
   border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 4px 14px -4px var(--accent-soft);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, background 0.8s ease;
 }
@@ -173,7 +180,7 @@ body {
 @media (min-width: 1152px) {
   .orbit-grid {
     height: 100%;
-    grid-template-columns: 1fr 2.3fr 1fr;
+    grid-template-columns: 1.15fr 2fr 1.15fr;
     grid-template-rows: 1.6fr 1fr 1.6fr;
     grid-template-areas:
       "timer    calendar  sleep"

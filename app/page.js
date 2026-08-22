@@ -163,7 +163,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="area-sound flex flex-col justify-center gap-3 overflow-y-auto">
+          <div className="area-sound flex flex-col gap-3 min-h-0 overflow-y-auto">
             <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
             <YoutubeBypassButton settings={settings} onSettingsChange={setSettings} />
           </div>

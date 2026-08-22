@@ -63,23 +63,23 @@ export default function FocusTimer({
           className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full opacity-60 blur-3xl pointer-events-none"
           style={{ background: "radial-gradient(circle, #EBE5FF 0%, transparent 70%)" }}
         />
-        <h2 className="font-display font-bold text-xl text-ink-900 relative shrink-0">
+        <h2 className="font-display font-bold text-lg leading-tight text-ink-900 relative shrink-0">
           Ready when you are
         </h2>
-        <p className="text-ink-500 text-sm relative max-w-md shrink-0">
-          A 45-minute block. Confirm within 5 minutes to end it, or stay
-          quiet and it runs to 100.
+        <p className="text-ink-500 text-xs relative max-w-md shrink-0">
+          A 45-minute block — confirm within 5 min to end it, or stay quiet
+          and it runs to 100.
         </p>
-        <div className="flex flex-col gap-2 relative w-full max-w-xs shrink-0">
+        <div className="flex flex-col gap-1.5 relative w-full max-w-xs shrink-0">
           <button
             onClick={() => onStart(defaultType)}
-            className="btn-primary rounded-full font-display font-semibold px-8 py-3 text-base w-full"
+            className="btn-primary rounded-full font-display font-semibold px-6 py-2.5 text-sm w-full"
           >
             {defaultType === "review" ? "Start review session" : "Start focus session"}
           </button>
           <button
             onClick={onCrash}
-            className="chip rounded-full px-6 py-2 text-ink-700 hover:bg-paper-200 transition text-sm font-medium w-full"
+            className="chip rounded-full px-6 py-1.5 text-ink-700 hover:bg-paper-200 transition text-xs font-medium w-full"
           >
             I can't focus right now
           </button>

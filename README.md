@@ -205,10 +205,10 @@ No Schoology API access, so this is a manual bridge: two deliberately
 **unauthenticated** pages (fine — nobody else knows this URL, and the
 blast radius of someone finding it is "fake homework tasks appear").
 
-- **https://focus-workspace-ten.vercel.app/view** — plain read-only dump
+- **https://focuscenter.vercel.app/view** — plain read-only dump
   of every current task, sleep times, SAT dates, and deadlines. Check
   here first so an update doesn't duplicate what's already there.
-- **https://focus-workspace-ten.vercel.app/input** — a form with one
+- **https://focuscenter.vercel.app/input** — a form with one
   textarea. Paste one task per line as `Title | YYYY-MM-DD` (date
   optional) and submit. This **replaces** all currently-open
   Schoology-sourced tasks with the pasted list — anything already marked
@@ -218,9 +218,9 @@ blast radius of someone finding it is "fake homework tasks appear").
 Prompt to hand ChatGPT (with browsing/agent capability) for a weekly run:
 
 > Log into Schoology and list my current open assignments with their due
-> dates. Then go to https://focus-workspace-ten.vercel.app/view and check
+> dates. Then go to https://focuscenter.vercel.app/view and check
 > what's already listed there, so you don't duplicate anything already
-> tracked. Then go to https://focus-workspace-ten.vercel.app/input, and in
+> tracked. Then go to https://focuscenter.vercel.app/input, and in
 > the textarea, paste one assignment per line in the format
 > `Title | YYYY-MM-DD` (the date is optional if there isn't one), then
 > submit the form. This replaces my current open Schoology task list with
