@@ -13,10 +13,9 @@ export async function PATCH(request) {
   const allowed = [
     "weekday_wake",
     "weekend_wake",
-    "sat_exam_date",
+    "weekday_bedtime",
+    "weekend_bedtime",
     "college_deadlines",
-    "blocked_sites",
-    "quotes",
   ];
   const patch = { updated_at: new Date().toISOString() };
   for (const key of allowed) {

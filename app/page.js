@@ -10,6 +10,8 @@ import SleepWidget from "@/components/SleepWidget";
 import MotivationStrip from "@/components/MotivationStrip";
 import SatProgress from "@/components/SatProgress";
 import MessagesInbox from "@/components/MessagesInbox";
+import CalendarPanel from "@/components/CalendarPanel";
+import YoutubeBypassButton from "@/components/YoutubeBypassButton";
 import { isWeekend } from "@/lib/dates";
 
 async function fetchJSON(url, opts) {
@@ -25,7 +27,6 @@ export default function Dashboard() {
   const [settings, setSettings] = useState(null);
   const [crashOpen, setCrashOpen] = useState(false);
   const [musicMode, setMusicMode] = useState("ambient"); // ambient | 40hz
-  const [beatsSignal, setBeatsSignal] = useState(0);
   const [loading, setLoading] = useState(true);
   const weekend = isWeekend();
 
@@ -137,6 +138,10 @@ export default function Dashboard() {
           {new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
         </p>
 
+        <div className="mb-6">
+          <CalendarPanel settings={settings} />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 flex flex-col gap-6">
             <FocusTimer
@@ -149,12 +154,15 @@ export default function Dashboard() {
               onAbandon={abandon}
               onCrash={() => setCrashOpen(true)}
             />
-            <MusicPanel mode={musicMode} onModeChange={setMusicMode} autoPlaySignal={beatsSignal} />
+            <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
+            <div className="flex items-center justify-between">
+              <YoutubeBypassButton settings={settings} onSettingsChange={setSettings} />
+            </div>
             {isBreakOrIdle && <MessagesInbox />}
           </div>
 
           <div className="flex flex-col gap-6">
-            <MotivationStrip settings={settings} />
+            <MotivationStrip />
             <SleepWidget settings={settings} onSettingsChange={setSettings} />
             <PlannerCard tasks={tasks} onTasksChange={refreshTasks} weekend={weekend} />
           </div>
@@ -166,7 +174,6 @@ export default function Dashboard() {
         onClose={() => setCrashOpen(false)}
         onStartBeats={() => {
           setMusicMode("40hz");
-          setBeatsSignal((n) => n + 1);
           setCrashOpen(false);
         }}
       />

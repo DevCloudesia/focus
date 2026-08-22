@@ -25,16 +25,27 @@ export async function GET(request) {
     .limit(1)
     .maybeSingle();
 
-  const { data: settings } = await db.from("settings").select("blocked_sites").eq("id", 1).single();
+  const { data: settings } = await db
+    .from("settings")
+    .select("blocked_sites, youtube_bypass_until")
+    .eq("id", 1)
+    .single();
 
   const phase = session ? getSessionPhase(session) : "idle";
   const active = phase === "working" || phase === "awaiting_confirm" || phase === "extended";
+
+  const bypassActive =
+    settings?.youtube_bypass_until && new Date(settings.youtube_bypass_until) > new Date();
+  const blockedSites = bypassActive
+    ? (settings?.blocked_sites ?? []).filter((s) => s !== "youtube.com")
+    : settings?.blocked_sites ?? [];
 
   return NextResponse.json({
     active,
     phase,
     is_weekend: isWeekend(),
     session_type: session?.type ?? null,
-    blocked_sites: settings?.blocked_sites ?? [],
+    blocked_sites: blockedSites,
+    youtube_bypass_until: bypassActive ? settings.youtube_bypass_until : null,
   });
 }

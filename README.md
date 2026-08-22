@@ -155,8 +155,35 @@ npm run dev
 
 ## Customizing the music panel
 
-Track/playlist IDs live in `components/MusicPanel.jsx` (`TRACKS`) — swap
-in whatever YouTube videos/playlists you actually want to listen to.
+Playlist IDs live in `components/MusicPanel.jsx` (`PLAYLISTS`) — real
+Spotify playlists, embedded. Right-click a playlist in Spotify → Share →
+Copy link, take the ID after `/playlist/`. Needs you logged into Spotify
+in the browser to actually play; free accounts get occasional ads.
+
+## Calendar-centric dashboard
+
+The dashboard's top card (`components/CalendarPanel.jsx`) reads your
+actual Google Calendar via `/api/calendar/events` — recurring wind-down
+blocks, SAT dates, the college-application milestone, and anything else
+on your calendar all show up there automatically. Needs the Google OAuth
+setup above; shows a "not connected" state without it.
+
+Sleep, SAT dates, and the college-application countdown all live as real
+Supabase `settings` fields (`weekday_bedtime`/`weekend_bedtime`,
+`sat_exams`, `college_deadlines`) — bedtime/wake are editable via
+dropdowns on the dashboard's Sleep card; SAT dates are read-only display
+(edit them directly in Supabase if they change); college deadlines stay
+editable in Settings.
+
+## Blocked sites & the study bypass
+
+Blocked sites are fixed to just `youtube.com` during active weekday work
+sessions (no add/remove UI — see `extension/README.md` to install the
+blocker). The "hold 5s to unlock YouTube" button on the dashboard
+(`components/YoutubeBypassButton.jsx`) sets a 90-minute bypass window
+(`settings.youtube_bypass_until` in Supabase) that `/api/session-state`
+excludes from the blocked list while active — for when you actually need
+a YouTube video for studying.
 
 ## Weekly review blocks
 
