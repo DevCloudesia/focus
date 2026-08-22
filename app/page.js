@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [settings, setSettings] = useState(null);
   const [crashOpen, setCrashOpen] = useState(false);
   const [musicMode, setMusicMode] = useState("ambient"); // ambient | 40hz
+  const [beatsSignal, setBeatsSignal] = useState(0);
   const [loading, setLoading] = useState(true);
   const weekend = isWeekend();
 
@@ -148,7 +149,7 @@ export default function Dashboard() {
               onAbandon={abandon}
               onCrash={() => setCrashOpen(true)}
             />
-            <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
+            <MusicPanel mode={musicMode} onModeChange={setMusicMode} autoPlaySignal={beatsSignal} />
             {isBreakOrIdle && <MessagesInbox />}
           </div>
 
@@ -165,6 +166,7 @@ export default function Dashboard() {
         onClose={() => setCrashOpen(false)}
         onStartBeats={() => {
           setMusicMode("40hz");
+          setBeatsSignal((n) => n + 1);
           setCrashOpen(false);
         }}
       />
