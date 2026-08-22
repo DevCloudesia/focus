@@ -1,0 +1,173 @@
+"use client";
+
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import FocusTimer from "@/components/FocusTimer";
+import MusicPanel from "@/components/MusicPanel";
+import CrashMode from "@/components/CrashMode";
+import TaskList from "@/components/TaskList";
+import ReviewPanel from "@/components/ReviewPanel";
+import SleepWidget from "@/components/SleepWidget";
+import MotivationStrip from "@/components/MotivationStrip";
+import SatProgress from "@/components/SatProgress";
+import MessagesInbox from "@/components/MessagesInbox";
+import { isWeekend } from "@/lib/dates";
+
+async function fetchJSON(url, opts) {
+  const res = await fetch(url, opts);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error || `${url} failed`);
+  return body;
+}
+
+export default function Dashboard() {
+  const [session, setSession] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [settings, setSettings] = useState(null);
+  const [crashOpen, setCrashOpen] = useState(false);
+  const [musicMode, setMusicMode] = useState("ambient"); // ambient | 40hz
+  const [loading, setLoading] = useState(true);
+  const weekend = isWeekend();
+
+  const refreshSession = useCallback(async () => {
+    const { active } = await fetchJSON("/api/sessions");
+    setSession(active);
+  }, []);
+
+  const refreshTasks = useCallback(async () => {
+    const { tasks } = await fetchJSON("/api/tasks");
+    setTasks(tasks);
+  }, []);
+
+  const refreshSettings = useCallback(async () => {
+    const { settings } = await fetchJSON("/api/settings");
+    setSettings(settings);
+  }, []);
+
+  useEffect(() => {
+    Promise.all([refreshSession(), refreshTasks(), refreshSettings()]).finally(() =>
+      setLoading(false)
+    );
+    const id = setInterval(refreshSession, 15000);
+    return () => clearInterval(id);
+  }, [refreshSession, refreshTasks, refreshSettings]);
+
+  const startSession = useCallback(
+    async (type = "work", taskId = null) => {
+      const { session } = await fetchJSON("/api/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, task_id: taskId }),
+      });
+      setSession(session);
+    },
+    []
+  );
+
+  const confirmDone = useCallback(async () => {
+    if (!session) return;
+    const { session: updated } = await fetchJSON(`/api/sessions/${session.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "confirm_done" }),
+    });
+    setSession(null);
+    return updated;
+  }, [session]);
+
+  const forceEnd = useCallback(async () => {
+    if (!session) return;
+    const { session: updated } = await fetchJSON(`/api/sessions/${session.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "force_end" }),
+    });
+    setSession(null);
+    return updated;
+  }, [session]);
+
+  const abandon = useCallback(async () => {
+    if (!session) return;
+    await fetchJSON(`/api/sessions/${session.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "abandon" }),
+    });
+    setSession(null);
+  }, [session]);
+
+  const isBreakOrIdle = !session;
+
+  const defaultSessionType = useMemo(() => {
+    // Weekends default review content once homework is done, per user's rule.
+    return weekend ? "review" : "work";
+  }, [weekend]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center text-mist-300">
+        loading your workspace…
+      </main>
+    );
+  }
+
+  return (
+    <main className={`min-h-screen pb-24 ${weekend ? "bg-ink-950" : "bg-ink-950"}`}>
+      <div className="max-w-6xl mx-auto px-6 pt-10">
+        <header className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="font-display text-2xl text-mist-100">
+              {weekend ? "Weekend — slower, review-focused" : "Focus"}
+            </h1>
+            <p className="text-mist-400 text-sm mt-1">
+              {new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <SatProgress />
+            <Link
+              href="/settings"
+              className="chip rounded-full px-4 py-2 text-sm text-mist-300 hover:text-mist-100 transition"
+            >
+              Settings
+            </Link>
+          </div>
+        </header>
+
+        <MotivationStrip settings={settings} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          <div className="lg:col-span-2 flex flex-col gap-6">
+            <FocusTimer
+              session={session}
+              weekend={weekend}
+              defaultType={defaultSessionType}
+              onStart={startSession}
+              onConfirmDone={confirmDone}
+              onForceEnd={forceEnd}
+              onAbandon={abandon}
+              onCrash={() => setCrashOpen(true)}
+            />
+            <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
+            {isBreakOrIdle && <MessagesInbox />}
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <SleepWidget settings={settings} onSettingsChange={setSettings} />
+            <TaskList tasks={tasks} onChange={refreshTasks} weekend={weekend} />
+            <ReviewPanel weekend={weekend} />
+          </div>
+        </div>
+      </div>
+
+      <CrashMode
+        open={crashOpen}
+        onClose={() => setCrashOpen(false)}
+        onStartBeats={() => {
+          setMusicMode("40hz");
+          setCrashOpen(false);
+        }}
+      />
+    </main>
+  );
+}

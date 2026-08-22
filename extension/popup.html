@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        width: 280px;
+        background: #0a0e14;
+        color: #e7ebf2;
+        font-family: system-ui, sans-serif;
+        padding: 16px;
+      }
+      h1 {
+        font-size: 14px;
+        margin: 0 0 12px;
+      }
+      label {
+        font-size: 11px;
+        color: #a3aec0;
+        display: block;
+        margin-bottom: 4px;
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #e7ebf2;
+        padding: 8px;
+        margin-bottom: 12px;
+        font-size: 12px;
+      }
+      button {
+        width: 100%;
+        background: #ff8b5e;
+        color: #0a0e14;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      #status {
+        font-size: 11px;
+        color: #8fd4ab;
+        margin-top: 8px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Focus Workspace Companion</h1>
+    <label for="appUrl">App URL</label>
+    <input id="appUrl" placeholder="https://your-app.vercel.app" />
+    <label for="secret">Extension secret (optional)</label>
+    <input id="secret" placeholder="EXTENSION_SYNC_SECRET" />
+    <button id="save">Save</button>
+    <div id="status"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>

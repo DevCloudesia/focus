@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Focus Workspace Companion",
+  "version": "1.0.0",
+  "description": "Blocks distracting sites during active work sessions in your focus app, and can sync Schoology assignments into it.",
+  "permissions": ["storage", "declarativeNetRequest", "alarms"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Focus Workspace"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.schoology.com/*"],
+      "js": ["content-schoology.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
