@@ -62,14 +62,18 @@ we used those instead of building separate OAuth apps:
   "block wind-down on my calendar" button and `/api/calendar/wind-down`
   route are **not** connected to this — they're dead code unless you do
   the manual OAuth setup below.
-- **Gmail/Slack message queue**: a Claude Code Remote Routine ("Focus
-  app: sync Gmail + Slack into message queue", hourly, self-bound to the
-  session that built this) reads unread Gmail and recent Slack DMs each
-  hour and inserts rows straight into `messages_queue` via the Supabase
-  MCP tools — bypassing `/api/messages/sync`, `lib/google.js`, and
-  `lib/slack.js` entirely. Manage/inspect it at claude.ai's Routines UI,
-  or ask Claude in that session to change the cadence, wind-down time, or
-  stop it.
+- **Gmail message queue**: a Claude Code Remote Routine ("Focus app:
+  sync Gmail + Slack into message queue", hourly, self-bound to the
+  session that built this) reads unread Gmail each hour and inserts rows
+  straight into `messages_queue` via the Supabase MCP tools — bypassing
+  `/api/messages/sync` and `lib/google.js` entirely. Manage/inspect it at
+  claude.ai's Routines UI, or ask Claude in that session to change the
+  cadence, wind-down time, or stop it.
+- **Slack was dropped**: the connected Slack MCP tools only expose
+  search, not a reliable way to list DMs/mentions, so the Routine no
+  longer tries Slack at all — only Gmail feeds the message queue right
+  now. `lib/slack.js` and the manual bot-token path below are unused
+  unless you set that up.
 
 This means the message queue only updates while that Claude session
 stays alive and that Routine keeps firing — it is **not** the website
