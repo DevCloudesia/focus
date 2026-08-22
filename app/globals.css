@@ -75,7 +75,11 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Liquid glass: translucent, blurred, soft-edged, gently luminous. */
+/* Liquid glass: translucent, blurred, soft-edged, gently luminous. Flex
+   column + height:100% so a card dropped into a fixed-height grid tile
+   (see .orbit-grid) fills it properly instead of shrink-wrapping to
+   content and leaving a "tragic" leftover gap — harmless everywhere else,
+   since height:100% of an auto-height ancestor just resolves to auto. */
 .card {
   background: rgba(255, 255, 255, 0.62);
   backdrop-filter: blur(24px) saturate(160%);
@@ -83,6 +87,20 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 1.75rem;
   box-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) inset, 0 8px 32px -12px rgba(88, 60, 180, 0.18);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* For a card that shares its grid tile with a sibling (e.g. Sound +
+   the YouTube bypass button stacked together) — sizes to its own
+   content instead of claiming the whole tile and squeezing the sibling
+   out. Order matters: must come after .card to win the height rule. */
+.card-auto {
+  height: auto;
+  flex: none;
 }
 
 .chip {
@@ -133,57 +151,64 @@ body {
   transition: background 0.8s ease;
 }
 
+/* Bento dashboard: calendar is a wide, full-height center column; the rest
+   sit in two side columns as paired tiles, sized by fr so every tile gets
+   a sane aspect ratio instead of a narrow, content-shrunk sliver. Below
+   lg it collapses to a normal stacked, page-scrolling column — no fixed
+   height there, a phone/tablet is never trying to be "one page". */
 .orbit-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
   grid-template-columns: 1fr;
   grid-template-areas:
     "calendar"
     "timer"
-    "music"
-    "bypass"
+    "sound"
     "messages"
     "sleep"
-    "planner"
-    "motivation";
+    "motivation"
+    "planner";
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1152px) {
   .orbit-grid {
-    grid-template-columns: 1fr 1.7fr 1fr;
-    grid-template-rows: auto auto auto auto;
-    align-items: start;
+    height: 100%;
+    grid-template-columns: 1fr 2.3fr 1fr;
+    grid-template-rows: 1.6fr 1fr 1.6fr;
     grid-template-areas:
       "timer    calendar  sleep"
-      "music    calendar  motivation"
-      "bypass   calendar  planner"
+      "sound    calendar  motivation"
       "messages calendar  planner";
   }
 }
 
 .area-calendar {
   grid-area: calendar;
+  min-height: 0;
 }
 .area-timer {
   grid-area: timer;
+  min-height: 0;
 }
-.area-music {
-  grid-area: music;
-}
-.area-bypass {
-  grid-area: bypass;
+.area-sound {
+  grid-area: sound;
+  min-height: 0;
 }
 .area-messages {
   grid-area: messages;
+  min-height: 0;
 }
 .area-sleep {
   grid-area: sleep;
+  min-height: 0;
 }
 .area-planner {
   grid-area: planner;
+  min-height: 0;
 }
 .area-motivation {
   grid-area: motivation;
+  min-height: 0;
 }
 
 /* Task rows */

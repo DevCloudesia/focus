@@ -53,7 +53,7 @@ export default function MusicPanel({ mode, onModeChange }) {
       if (cancelled || !IFrameAPI || !mountRef.current) return;
       IFrameAPI.createController(
         mountRef.current,
-        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height: "352" },
+        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height: "152" },
         (controller) => {
           if (cancelled) return;
           controllerRef.current = controller;
@@ -91,9 +91,9 @@ export default function MusicPanel({ mode, onModeChange }) {
   };
 
   return (
-    <div className="card p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display font-semibold text-lg text-ink-900">Sound</h3>
+    <div className="card card-auto p-5">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-display font-semibold text-base text-ink-900">Sound</h3>
         <div className="chip rounded-full p-1 flex text-xs">
           <button
             onClick={() => onModeChange("ambient")}

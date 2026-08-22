@@ -37,8 +37,8 @@ export default function MotivationStrip() {
   }, []);
 
   return (
-    <div className="card p-5 bg-gradient-to-br from-violet-100 via-white to-coral-100">
-      <p className="font-display font-medium text-ink-900 text-base leading-snug">"{quote}"</p>
+    <div className="card p-6 justify-center bg-gradient-to-br from-violet-100 via-white to-coral-100">
+      <p className="font-display font-medium text-ink-900 text-lg leading-snug">"{quote}"</p>
     </div>
   );
 }

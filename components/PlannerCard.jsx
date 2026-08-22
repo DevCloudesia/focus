@@ -10,7 +10,7 @@ export default function PlannerCard({ tasks, onTasksChange, weekend }) {
 
   return (
     <div className="card p-6">
-      <div className="flex items-center gap-1 mb-5 chip rounded-full p-1 w-fit">
+      <div className="shrink-0 flex items-center gap-1 mb-4 chip rounded-full p-1 w-fit">
         <button
           onClick={() => setTab("tasks")}
           className={`rounded-full px-4 py-1.5 text-sm font-display font-medium transition ${
@@ -29,11 +29,13 @@ export default function PlannerCard({ tasks, onTasksChange, weekend }) {
         </button>
       </div>
 
-      {tab === "tasks" ? (
-        <TaskList tasks={tasks} onChange={onTasksChange} />
-      ) : (
-        <ReviewPanel weekend={weekend} />
-      )}
+      <div className="flex-1 min-h-0 flex flex-col">
+        {tab === "tasks" ? (
+          <TaskList tasks={tasks} onChange={onTasksChange} />
+        ) : (
+          <ReviewPanel weekend={weekend} />
+        )}
+      </div>
     </div>
   );
 }

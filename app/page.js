@@ -113,9 +113,9 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="min-h-screen">
-      <header className="sticky top-0 z-10 bg-white/50 backdrop-blur-xl border-b border-white/60">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <main className="min-h-screen lg:h-screen flex flex-col">
+      <header className="shrink-0 bg-white/50 backdrop-blur-xl border-b border-white/60">
+        <div className="px-5 md:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <TimeMark className="w-6 h-6 flex-shrink-0" />
             <span className="font-display font-bold text-lg text-accent-gradient">Focus</span>
@@ -135,17 +135,17 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="mb-6">
-          <h1 className="font-display font-bold text-2xl text-ink-900">
+      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col px-5 md:px-8 pb-5 pt-3">
+        <div className="shrink-0 mb-3 flex items-baseline justify-between gap-4 flex-wrap">
+          <h1 className="font-display font-bold text-xl text-ink-900">
             {getGreeting()} — you've got this.
           </h1>
-          <p className="text-ink-500 text-sm mt-1">
+          <p className="text-ink-500 text-sm">
             {new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
           </p>
         </div>
 
-        <div className="orbit-grid">
+        <div className="orbit-grid flex-1 min-h-0">
           <div className="area-calendar orbit-center">
             <CalendarPanel settings={settings} />
           </div>
@@ -163,19 +163,20 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="area-music">
+          <div className="area-sound flex flex-col justify-center gap-3 overflow-y-auto">
             <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
-          </div>
-
-          <div className="area-bypass flex items-center">
             <YoutubeBypassButton settings={settings} onSettingsChange={setSettings} />
           </div>
 
-          {isBreakOrIdle && (
-            <div className="area-messages">
+          <div className="area-messages">
+            {isBreakOrIdle ? (
               <MessagesInbox />
-            </div>
-          )}
+            ) : (
+              <div className="card p-5 items-center justify-center text-center text-sm text-ink-400">
+                Messages stay quiet during a session.
+              </div>
+            )}
+          </div>
 
           <div className="area-sleep">
             <SleepWidget settings={settings} onSettingsChange={setSettings} />

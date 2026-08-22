@@ -5,6 +5,17 @@ module.exports = {
     "./components/**/*.{js,jsx}",
   ],
   theme: {
+    screens: {
+      sm: "640px",
+      md: "768px",
+      // Bumped from the default 1024px: the one-page bento grid needs real
+      // width per tile (see .orbit-grid in globals.css, same breakpoint).
+      // A genuinely cramped window falls back to the stacked, scrolling
+      // mobile layout instead of forcing content into too-tight tiles.
+      lg: "1152px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     extend: {
       colors: {
         paper: {

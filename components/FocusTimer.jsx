@@ -54,35 +54,32 @@ export default function FocusTimer({
 
   if (!session) {
     return (
-      <div className="card p-10 sm:p-14 flex flex-col items-center gap-6 text-center relative overflow-hidden">
+      <div className="card p-4 sm:p-5 flex flex-col items-center justify-center gap-2.5 text-center relative overflow-y-auto">
         <div
-          className="absolute -top-24 -right-24 w-64 h-64 rounded-full opacity-60 blur-3xl"
+          className="absolute -top-24 -right-24 w-64 h-64 rounded-full opacity-60 blur-3xl pointer-events-none"
           style={{ background: "radial-gradient(circle, #FFE4DA 0%, transparent 70%)" }}
         />
         <div
-          className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full opacity-60 blur-3xl"
+          className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full opacity-60 blur-3xl pointer-events-none"
           style={{ background: "radial-gradient(circle, #EBE5FF 0%, transparent 70%)" }}
         />
-        <div className="chip rounded-full px-3 py-1 text-xs text-ink-500 uppercase tracking-wide relative">
-          {weekend ? "Weekend mode" : "Weekday mode"}
-        </div>
-        <h2 className="font-display font-bold text-3xl text-ink-900 relative">
+        <h2 className="font-display font-bold text-xl text-ink-900 relative shrink-0">
           Ready when you are
         </h2>
-        <p className="text-ink-500 relative max-w-md">
-          A session starts a 45-minute block. Confirm within 5 minutes to end
-          it — stay quiet and it quietly runs to 100, then a longer break.
+        <p className="text-ink-500 text-sm relative max-w-md shrink-0">
+          A 45-minute block. Confirm within 5 minutes to end it, or stay
+          quiet and it runs to 100.
         </p>
-        <div className="flex flex-col gap-3 mt-2 relative w-full max-w-xs">
+        <div className="flex flex-col gap-2 relative w-full max-w-xs shrink-0">
           <button
             onClick={() => onStart(defaultType)}
-            className="btn-primary rounded-full font-display font-semibold px-8 py-4 text-lg w-full"
+            className="btn-primary rounded-full font-display font-semibold px-8 py-3 text-base w-full"
           >
             {defaultType === "review" ? "Start review session" : "Start focus session"}
           </button>
           <button
             onClick={onCrash}
-            className="chip rounded-full px-6 py-3 text-ink-700 hover:bg-paper-200 transition text-sm font-medium w-full"
+            className="chip rounded-full px-6 py-2 text-ink-700 hover:bg-paper-200 transition text-sm font-medium w-full"
           >
             I can't focus right now
           </button>
@@ -94,16 +91,16 @@ export default function FocusTimer({
   const copy = PHASE_COPY[phase] || PHASE_COPY.working;
 
   return (
-    <div className="card p-10 sm:p-14 flex flex-col items-center gap-6 text-center">
-      <div className={`text-xs uppercase tracking-wide font-semibold ${copy.tone}`}>{copy.label}</div>
-      <div className="font-mono-num font-semibold text-7xl text-ink-900">{formatClock(remainingSec)}</div>
-      <div className="w-full max-w-sm h-2 rounded-full bg-paper-200 overflow-hidden">
+    <div className="card p-4 sm:p-5 flex flex-col items-center justify-center gap-2.5 text-center overflow-y-auto">
+      <div className={`text-xs uppercase tracking-wide font-semibold shrink-0 ${copy.tone}`}>{copy.label}</div>
+      <div className="font-mono-num font-semibold text-4xl sm:text-5xl text-ink-900 shrink-0">{formatClock(remainingSec)}</div>
+      <div className="w-full max-w-sm h-2 rounded-full bg-paper-200 overflow-hidden shrink-0">
         <div
           className="h-full rounded-full bg-gradient-to-r from-coral-500 to-violet-500 transition-all duration-1000"
           style={{ width: `${progressPct}%` }}
         />
       </div>
-      <p className="text-ink-500 text-sm max-w-sm">
+      <p className="text-ink-500 text-sm max-w-sm shrink-0">
         {phase === "working" && "Confirm opens at 45 minutes."}
         {phase === "awaiting_confirm" &&
           "You're in the window — confirm now for a 10-min break, or keep going and it'll silently extend to 100."}
@@ -111,17 +108,17 @@ export default function FocusTimer({
       </p>
 
       {(phase === "working" || phase === "awaiting_confirm") && (
-        <div className="flex flex-col gap-3 w-full max-w-xs">
+        <div className="flex flex-col gap-2 w-full max-w-xs shrink-0">
           <button
             disabled={phase !== "awaiting_confirm"}
             onClick={onConfirmDone}
-            className="rounded-full bg-mint-500 disabled:bg-paper-200 disabled:text-ink-400 hover:bg-mint-600 text-white font-display font-semibold px-8 py-4 transition disabled:cursor-not-allowed w-full"
+            className="rounded-full bg-mint-500 disabled:bg-paper-200 disabled:text-ink-400 hover:bg-mint-600 text-white font-display font-semibold px-8 py-3 transition disabled:cursor-not-allowed w-full"
           >
             I'm done — take my break
           </button>
           <button
             onClick={onAbandon}
-            className="chip rounded-full px-6 py-3 text-ink-500 hover:bg-paper-200 transition text-sm w-full"
+            className="chip rounded-full px-6 py-2 text-ink-500 hover:bg-paper-200 transition text-sm w-full"
           >
             Abandon session
           </button>
@@ -130,7 +127,7 @@ export default function FocusTimer({
       {phase === "extended" && (
         <button
           onClick={onAbandon}
-          className="chip rounded-full px-6 py-3 text-ink-500 hover:bg-paper-200 transition text-sm w-full max-w-xs"
+          className="chip rounded-full px-6 py-2 text-ink-500 hover:bg-paper-200 transition text-sm w-full max-w-xs shrink-0"
         >
           End early
         </button>

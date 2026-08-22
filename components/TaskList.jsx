@@ -58,8 +58,8 @@ export default function TaskList({ tasks, onChange }) {
   const done = visible.filter((t) => t.status === "done");
 
   return (
-    <div>
-      <div className="flex gap-1.5 mb-4 flex-wrap">
+    <div className="flex-1 min-h-0 flex flex-col">
+      <div className="shrink-0 flex gap-1.5 mb-4 flex-wrap">
         {["all", "school", "outside", "college_prep"].map((f) => (
           <button
             key={f}
@@ -73,7 +73,7 @@ export default function TaskList({ tasks, onChange }) {
         ))}
       </div>
 
-      <form onSubmit={addTask} className="flex gap-2 mb-4">
+      <form onSubmit={addTask} className="shrink-0 flex gap-2 mb-4">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -94,7 +94,7 @@ export default function TaskList({ tasks, onChange }) {
         </button>
       </form>
 
-      <div className="flex flex-col gap-2 max-h-72 overflow-y-auto scrollbar-thin pr-1">
+      <div className="flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto scrollbar-thin pr-1">
         {open.length === 0 && done.length === 0 && (
           <p className="text-ink-400 text-sm py-6 text-center">
             Nothing here yet — add your first task above.

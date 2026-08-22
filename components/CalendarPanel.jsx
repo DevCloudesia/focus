@@ -23,7 +23,7 @@ export default function CalendarPanel({ settings }) {
 
   return (
     <div className="card p-6">
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+      <div className="shrink-0 flex items-center justify-between mb-4 flex-wrap gap-3">
         <h2 className="font-display font-bold text-xl text-ink-900">Calendar</h2>
         <div className="flex gap-2">
           {nextSat && (
@@ -40,12 +40,10 @@ export default function CalendarPanel({ settings }) {
         </div>
       </div>
 
-      <div className="rounded-2xl overflow-hidden border border-white/70">
+      <div className="flex-1 min-h-[320px] lg:min-h-0 rounded-2xl overflow-hidden border border-white/70">
         <iframe
           src={EMBED_SRC}
-          style={{ border: 0 }}
-          width="100%"
-          height="600"
+          style={{ border: 0, width: "100%", height: "100%", display: "block" }}
           title="Google Calendar"
         />
       </div>

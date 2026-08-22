@@ -36,7 +36,7 @@ export default function MessagesInbox() {
 
   if (unseen.length === 0) {
     return (
-      <div className="card p-5 text-sm text-ink-400 text-center">
+      <div className="card card-auto p-5 items-center justify-center text-sm text-ink-400 text-center">
         Nothing queued from Gmail.
       </div>
     );
@@ -53,10 +53,10 @@ export default function MessagesInbox() {
 
   return (
     <div className="card p-5">
-      <h3 className="font-display font-semibold text-base text-ink-900 mb-3">
+      <h3 className="shrink-0 font-display font-semibold text-base text-ink-900 mb-3">
         While You Were Focused ({unseen.length})
       </h3>
-      <div className="flex flex-col gap-2">
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin flex flex-col gap-2 pr-1">
         {unseen.map((m) => (
           <div key={m.id} className="flex items-start gap-2 text-sm">
             <span className="chip px-2 py-0.5 text-[10px] text-ink-500 font-medium flex-shrink-0 mt-0.5">

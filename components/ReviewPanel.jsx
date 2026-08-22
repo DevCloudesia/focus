@@ -49,8 +49,8 @@ export default function ReviewPanel({ weekend }) {
   const upcoming = blocks.filter((b) => !b.completed);
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-1">
+    <div className="flex-1 min-h-0 flex flex-col">
+      <div className="shrink-0 flex items-center justify-between mb-1">
         <p className="text-ink-500 text-xs">
           1 / 2 / 5-day and 2-week spacing, as weekly batches.
         </p>
@@ -61,7 +61,7 @@ export default function ReviewPanel({ weekend }) {
         )}
       </div>
 
-      <div className="flex flex-col gap-1.5 my-4 max-h-40 overflow-y-auto scrollbar-thin">
+      <div className="flex-1 min-h-0 flex flex-col gap-1.5 my-4 overflow-y-auto scrollbar-thin">
         {upcoming.length === 0 && (
           <p className="text-ink-400 text-sm text-center py-4">No review blocks queued.</p>
         )}
@@ -77,7 +77,7 @@ export default function ReviewPanel({ weekend }) {
         ))}
       </div>
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="shrink-0 flex gap-2 flex-wrap">
         <button
           onClick={() => addBlock("daily_short")}
           className="chip rounded-full px-3 py-1.5 text-xs text-ink-700 hover:bg-paper-200 font-medium"
