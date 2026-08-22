@@ -12,7 +12,9 @@ import SatProgress from "@/components/SatProgress";
 import MessagesInbox from "@/components/MessagesInbox";
 import CalendarPanel from "@/components/CalendarPanel";
 import YoutubeBypassButton from "@/components/YoutubeBypassButton";
+import TimeMark from "@/components/TimeMark";
 import { isWeekend } from "@/lib/dates";
+import { getGreeting } from "@/lib/timeBand";
 
 async function fetchJSON(url, opts) {
   const res = await fetch(url, opts);
@@ -115,8 +117,8 @@ export default function Dashboard() {
       <header className="sticky top-0 z-10 bg-white/50 backdrop-blur-xl border-b border-white/60">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-coral-500 to-violet-500 flex-shrink-0" />
-            <span className="font-display font-bold text-lg text-ink-900">Focus</span>
+            <TimeMark className="w-6 h-6 flex-shrink-0" />
+            <span className="font-display font-bold text-lg text-accent-gradient">Focus</span>
             <span className="chip rounded-full px-2.5 py-1 text-[11px] text-ink-500 font-medium ml-1">
               {weekend ? "Weekend" : "Weekday"}
             </span>
@@ -134,16 +136,21 @@ export default function Dashboard() {
       </header>
 
       <div className="max-w-6xl mx-auto px-6 py-8">
-        <p className="text-ink-500 text-sm mb-6">
-          {new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
-        </p>
-
         <div className="mb-6">
-          <CalendarPanel settings={settings} />
+          <h1 className="font-display font-bold text-2xl text-ink-900">
+            {getGreeting()} — you've got this.
+          </h1>
+          <p className="text-ink-500 text-sm mt-1">
+            {new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 flex flex-col gap-6">
+        <div className="orbit-grid">
+          <div className="area-calendar orbit-center">
+            <CalendarPanel settings={settings} />
+          </div>
+
+          <div className="area-timer">
             <FocusTimer
               session={session}
               weekend={weekend}
@@ -154,16 +161,31 @@ export default function Dashboard() {
               onAbandon={abandon}
               onCrash={() => setCrashOpen(true)}
             />
-            <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
-            <div className="flex items-center justify-between">
-              <YoutubeBypassButton settings={settings} onSettingsChange={setSettings} />
-            </div>
-            {isBreakOrIdle && <MessagesInbox />}
           </div>
 
-          <div className="flex flex-col gap-6">
-            <MotivationStrip />
+          <div className="area-music">
+            <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
+          </div>
+
+          <div className="area-bypass flex items-center">
+            <YoutubeBypassButton settings={settings} onSettingsChange={setSettings} />
+          </div>
+
+          {isBreakOrIdle && (
+            <div className="area-messages">
+              <MessagesInbox />
+            </div>
+          )}
+
+          <div className="area-sleep">
             <SleepWidget settings={settings} onSettingsChange={setSettings} />
+          </div>
+
+          <div className="area-motivation">
+            <MotivationStrip />
+          </div>
+
+          <div className="area-planner">
             <PlannerCard tasks={tasks} onTasksChange={refreshTasks} weekend={weekend} />
           </div>
         </div>

@@ -119,7 +119,7 @@ export default function SettingsPage() {
                 setNewDeadlineLabel("");
                 setNewDeadlineDate("");
               }}
-              className="rounded-lg px-4 py-2 text-sm font-medium bg-ink-900 text-white hover:bg-ink-700 transition"
+              className="btn-primary rounded-xl px-4 py-2 text-sm font-display font-semibold"
             >
               Add
             </button>

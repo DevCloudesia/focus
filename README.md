@@ -155,18 +155,32 @@ npm run dev
 
 ## Customizing the music panel
 
-Playlist IDs live in `components/MusicPanel.jsx` (`PLAYLISTS`) — real
-Spotify playlists, embedded. Right-click a playlist in Spotify → Share →
-Copy link, take the ID after `/playlist/`. Needs you logged into Spotify
-in the browser to actually play; free accounts get occasional ads.
+Playlist IDs live in `components/MusicPanel.jsx` (`PLAYLISTS`) — each mode
+(`ambient`, `40hz`) is an **array** of playlists, and a random one plays
+each time you switch modes. Add more IDs to either array for variety;
+right-click a playlist in Spotify → Share → Copy link, take the ID after
+`/playlist/`. Playback uses Spotify's iFrame Playback API so the "Start"
+button reliably plays audio (browsers block real autoplay without a
+genuine click, so there's always one tap to start). Needs you logged
+into Spotify in the browser; free accounts get occasional ads.
 
 ## Calendar-centric dashboard
 
-The dashboard's top card (`components/CalendarPanel.jsx`) reads your
-actual Google Calendar via `/api/calendar/events` — recurring wind-down
-blocks, SAT dates, the college-application milestone, and anything else
-on your calendar all show up there automatically. Needs the Google OAuth
-setup above; shows a "not connected" state without it.
+The dashboard is built around `components/CalendarPanel.jsx` — a real,
+embedded Google Calendar sits at the visual center of the page, with the
+timer, sound, sleep, tasks, and messages arranged around it (`.orbit-grid`
+in `app/globals.css`; static layout, nothing rotates). Needs the Google
+Calendar embed to be visible to you (signed into Google in the browser).
+
+## Sunrise-to-sunset theme
+
+The background blobs and primary button color shift through the day —
+sunrise pastels in the morning, warm sunset tones in the afternoon/evening,
+calm indigo at night. Driven by `data-time-band` on `<html>` (set in
+`app/layout.js` before first paint) and the CSS variables in
+`app/globals.css` (`--accent-a`, `--accent-b`, `--blob-1..4` per band).
+`lib/timeBand.js` has the same hour bands for any client-side copy (the
+dashboard's greeting) — keep both in sync if you ever change the hours.
 
 Sleep, SAT dates, and the college-application countdown all live as real
 Supabase `settings` fields (`weekday_bedtime`/`weekend_bedtime`,

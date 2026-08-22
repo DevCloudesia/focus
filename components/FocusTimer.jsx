@@ -66,23 +66,23 @@ export default function FocusTimer({
         <div className="chip rounded-full px-3 py-1 text-xs text-ink-500 uppercase tracking-wide relative">
           {weekend ? "Weekend mode" : "Weekday mode"}
         </div>
-        <h2 className="font-display font-bold text-4xl sm:text-5xl text-ink-900 relative">
+        <h2 className="font-display font-bold text-3xl text-ink-900 relative">
           Ready when you are
         </h2>
         <p className="text-ink-500 relative max-w-md">
           A session starts a 45-minute block. Confirm within 5 minutes to end
           it — stay quiet and it quietly runs to 100, then a longer break.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 mt-2 relative">
+        <div className="flex flex-col gap-3 mt-2 relative w-full max-w-xs">
           <button
             onClick={() => onStart(defaultType)}
-            className="btn-primary rounded-full font-display font-semibold px-8 py-4 text-lg"
+            className="btn-primary rounded-full font-display font-semibold px-8 py-4 text-lg w-full"
           >
             {defaultType === "review" ? "Start review session" : "Start focus session"}
           </button>
           <button
             onClick={onCrash}
-            className="chip rounded-full px-6 py-4 text-ink-700 hover:bg-paper-200 transition text-sm font-medium"
+            className="chip rounded-full px-6 py-3 text-ink-700 hover:bg-paper-200 transition text-sm font-medium w-full"
           >
             I can't focus right now
           </button>
@@ -111,17 +111,17 @@ export default function FocusTimer({
       </p>
 
       {(phase === "working" || phase === "awaiting_confirm") && (
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col gap-3 w-full max-w-xs">
           <button
             disabled={phase !== "awaiting_confirm"}
             onClick={onConfirmDone}
-            className="rounded-full bg-mint-500 disabled:bg-paper-200 disabled:text-ink-400 hover:bg-mint-600 text-white font-display font-semibold px-8 py-4 transition disabled:cursor-not-allowed"
+            className="rounded-full bg-mint-500 disabled:bg-paper-200 disabled:text-ink-400 hover:bg-mint-600 text-white font-display font-semibold px-8 py-4 transition disabled:cursor-not-allowed w-full"
           >
             I'm done — take my break
           </button>
           <button
             onClick={onAbandon}
-            className="chip rounded-full px-6 py-4 text-ink-500 hover:bg-paper-200 transition text-sm"
+            className="chip rounded-full px-6 py-3 text-ink-500 hover:bg-paper-200 transition text-sm w-full"
           >
             Abandon session
           </button>
@@ -130,7 +130,7 @@ export default function FocusTimer({
       {phase === "extended" && (
         <button
           onClick={onAbandon}
-          className="chip rounded-full px-6 py-4 text-ink-500 hover:bg-paper-200 transition text-sm"
+          className="chip rounded-full px-6 py-3 text-ink-500 hover:bg-paper-200 transition text-sm w-full max-w-xs"
         >
           End early
         </button>

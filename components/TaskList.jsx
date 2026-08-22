@@ -4,8 +4,8 @@ import { useState } from "react";
 
 const CATEGORY_LABEL = {
   school: "School",
-  outside: "Outside school",
-  college_prep: "College / future",
+  outside: "Outside School",
+  college_prep: "College / Future",
 };
 
 const CATEGORY_DOT = {
@@ -59,20 +59,18 @@ export default function TaskList({ tasks, onChange }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex gap-1.5">
-          {["all", "school", "outside", "college_prep"].map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition ${
-                filter === f ? "bg-ink-900 text-white" : "chip text-ink-500"
-              }`}
-            >
-              {f === "all" ? "All" : CATEGORY_LABEL[f]}
-            </button>
-          ))}
-        </div>
+      <div className="flex gap-1.5 mb-4 flex-wrap">
+        {["all", "school", "outside", "college_prep"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+              filter === f ? "btn-primary" : "chip text-ink-500 hover:text-ink-900"
+            }`}
+          >
+            {f === "all" ? "All" : CATEGORY_LABEL[f]}
+          </button>
+        ))}
       </div>
 
       <form onSubmit={addTask} className="flex gap-2 mb-4">
@@ -80,31 +78,33 @@ export default function TaskList({ tasks, onChange }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Add a task…"
-          className="flex-1 bg-paper-100 border border-paper-300 rounded-lg px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400 outline-none focus:ring-2 focus:ring-coral-400 focus:border-coral-400"
+          className="flex-1 bg-white/70 border border-white/70 rounded-xl px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 outline-none focus:ring-2 focus:ring-violet-400"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="bg-paper-100 border border-paper-300 rounded-lg px-2 py-2 text-xs text-ink-700"
+          className="bg-white/70 border border-white/70 rounded-xl px-2 py-2.5 text-xs text-ink-700"
         >
           <option value="school">School</option>
           <option value="outside">Outside</option>
           <option value="college_prep">College</option>
         </select>
-        <button className="rounded-lg px-4 py-2 text-sm font-medium bg-ink-900 text-white hover:bg-ink-700 transition">
+        <button className="btn-primary rounded-xl px-5 py-2.5 text-sm font-display font-semibold">
           Add
         </button>
       </form>
 
-      <div className="flex flex-col gap-1.5 max-h-72 overflow-y-auto scrollbar-thin">
+      <div className="flex flex-col gap-2 max-h-72 overflow-y-auto scrollbar-thin pr-1">
         {open.length === 0 && done.length === 0 && (
-          <p className="text-ink-400 text-sm py-4 text-center">Nothing here yet.</p>
+          <p className="text-ink-400 text-sm py-6 text-center">
+            Nothing here yet — add your first task above.
+          </p>
         )}
         {open.map((task) => (
           <TaskRow key={task.id} task={task} onToggle={toggleDone} onRemove={remove} />
         ))}
         {done.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-paper-200 flex flex-col gap-1.5">
+          <div className="mt-2 pt-3 border-t border-white/70 flex flex-col gap-2">
             {done.map((task) => (
               <TaskRow key={task.id} task={task} onToggle={toggleDone} onRemove={remove} done />
             ))}
@@ -117,11 +117,11 @@ export default function TaskList({ tasks, onChange }) {
 
 function TaskRow({ task, onToggle, onRemove, done }) {
   return (
-    <div className="flex items-center gap-2.5 group py-1">
+    <div className="task-row flex items-center gap-3 group px-3 py-2.5">
       <button
         onClick={() => onToggle(task)}
         className={`w-5 h-5 rounded-full border-2 flex-shrink-0 transition flex items-center justify-center ${
-          done ? "bg-mint-500 border-mint-500" : "border-paper-300 hover:border-mint-400"
+          done ? "bg-mint-500 border-mint-500" : "border-ink-400/40 hover:border-mint-400"
         }`}
       >
         {done && (
@@ -137,7 +137,9 @@ function TaskRow({ task, onToggle, onRemove, done }) {
         </div>
       </div>
       {task.source === "schoology" && (
-        <span className="text-[10px] text-violet-500 font-medium flex-shrink-0">Schoology</span>
+        <span className="chip px-2 py-0.5 text-[10px] text-violet-600 font-medium flex-shrink-0">
+          Schoology
+        </span>
       )}
       <button
         onClick={() => onRemove(task)}

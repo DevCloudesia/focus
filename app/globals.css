@@ -4,6 +4,46 @@
 
 :root {
   color-scheme: light;
+
+  /* Default (day) palette — overridden per data-time-band below. Sunrise in
+     the morning, sunset in the afternoon/evening, calm indigo at night. */
+  --accent-a: #ffb020;
+  --accent-b: #ff8a5c;
+  --accent-soft: rgba(255, 138, 92, 0.16);
+  --blob-1: rgba(255, 176, 32, 0.16);
+  --blob-2: rgba(92, 165, 255, 0.14);
+  --blob-3: rgba(79, 209, 197, 0.16);
+  --blob-4: rgba(255, 138, 92, 0.12);
+}
+
+[data-time-band="dawn"] {
+  --accent-a: #ff9a76;
+  --accent-b: #ff6fa8;
+  --accent-soft: rgba(255, 111, 168, 0.16);
+  --blob-1: rgba(255, 178, 153, 0.22);
+  --blob-2: rgba(255, 126, 179, 0.16);
+  --blob-3: rgba(255, 209, 102, 0.18);
+  --blob-4: rgba(199, 164, 255, 0.12);
+}
+
+[data-time-band="dusk"] {
+  --accent-a: #ff6a42;
+  --accent-b: #c93e7c;
+  --accent-soft: rgba(201, 62, 124, 0.16);
+  --blob-1: rgba(255, 106, 66, 0.22);
+  --blob-2: rgba(201, 62, 124, 0.16);
+  --blob-3: rgba(124, 92, 252, 0.14);
+  --blob-4: rgba(255, 176, 32, 0.14);
+}
+
+[data-time-band="night"] {
+  --accent-a: #7c5cfc;
+  --accent-b: #ff6fa8;
+  --accent-soft: rgba(124, 92, 252, 0.16);
+  --blob-1: rgba(124, 92, 252, 0.2);
+  --blob-2: rgba(255, 111, 168, 0.14);
+  --blob-3: rgba(255, 176, 32, 0.1);
+  --blob-4: rgba(91, 62, 224, 0.14);
 }
 
 html,
@@ -14,11 +54,12 @@ body {
 
 body {
   font-family: "Lato", system-ui, sans-serif;
-  background-image: radial-gradient(circle at 8% 8%, rgba(255, 138, 92, 0.16) 0%, transparent 40%),
-    radial-gradient(circle at 92% 15%, rgba(124, 92, 252, 0.16) 0%, transparent 42%),
-    radial-gradient(circle at 25% 90%, rgba(79, 209, 197, 0.14) 0%, transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(255, 176, 32, 0.12) 0%, transparent 40%);
+  background-image: radial-gradient(circle at 8% 8%, var(--blob-1) 0%, transparent 40%),
+    radial-gradient(circle at 92% 15%, var(--blob-2) 0%, transparent 42%),
+    radial-gradient(circle at 25% 90%, var(--blob-3) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, var(--blob-4) 0%, transparent 40%);
   background-attachment: fixed;
+  transition: background 0.8s ease;
 }
 
 ::selection {
@@ -53,18 +94,107 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #ff6a42, #ff5a36);
+  background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
   color: #ffffff;
   border-radius: 999px;
-  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 4px 14px -4px rgba(255, 90, 54, 0.5);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 4px 14px -4px var(--accent-soft);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, background 0.8s ease;
 }
 .btn-primary:hover {
   filter: brightness(1.05);
-  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 6px 18px -4px rgba(255, 90, 54, 0.55);
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 6px 18px -4px var(--accent-soft);
 }
 .btn-primary:active {
   transform: scale(0.98);
+}
+
+.text-accent-gradient {
+  background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: background 0.8s ease;
+}
+
+/* Calendar sits at the visual center of the dashboard; other cards ring it
+   on either side (see .orbit-grid) — deliberately NOT rotating, just laid
+   out so the eye reads it as the hub. A soft glow reinforces "center". */
+.orbit-center {
+  position: relative;
+}
+.orbit-center::before {
+  content: "";
+  position: absolute;
+  inset: -2.5rem;
+  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 72%);
+  z-index: -1;
+  border-radius: 3rem;
+  pointer-events: none;
+  transition: background 0.8s ease;
+}
+
+.orbit-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "calendar"
+    "timer"
+    "music"
+    "bypass"
+    "messages"
+    "sleep"
+    "planner"
+    "motivation";
+}
+
+@media (min-width: 1024px) {
+  .orbit-grid {
+    grid-template-columns: 1fr 1.7fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    align-items: start;
+    grid-template-areas:
+      "timer    calendar  sleep"
+      "music    calendar  motivation"
+      "bypass   calendar  planner"
+      "messages calendar  planner";
+  }
+}
+
+.area-calendar {
+  grid-area: calendar;
+}
+.area-timer {
+  grid-area: timer;
+}
+.area-music {
+  grid-area: music;
+}
+.area-bypass {
+  grid-area: bypass;
+}
+.area-messages {
+  grid-area: messages;
+}
+.area-sleep {
+  grid-area: sleep;
+}
+.area-planner {
+  grid-area: planner;
+}
+.area-motivation {
+  grid-area: motivation;
+}
+
+/* Task rows */
+.task-row {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 1rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.task-row:hover {
+  background: rgba(255, 255, 255, 0.75);
 }
 
 .scrollbar-thin::-webkit-scrollbar {
