@@ -48,44 +48,32 @@ policies.
    - `DAILY_FIFTY_SUPABASE_ANON_KEY` = see `.env.example`, or grab it from https://supabase.com/dashboard/project/majxhqnyzvnbwkkcpaxw/settings/api
 5. Redeploy (Vercel → Deployments → ⋯ → Redeploy) after adding env vars.
 
-### 2. Google Calendar + Gmail + Slack — actually set up differently than planned
+### 2. Google Calendar + Gmail (Vercel-native, no Claude involved)
 
-The `GOOGLE_CLIENT_ID`/`SLACK_BOT_TOKEN`-style env vars below are **not
-what's actually wired up**. Since Gmail, Google Calendar, and Slack were
-already connected as claude.ai connectors in the session that built this,
-we used those instead of building separate OAuth apps:
+This runs entirely as the website's own serverless function on a Vercel
+Cron schedule — once it's set up, it works with zero ongoing Claude
+session, exactly like the rest of the app.
 
-- **Calendar wind-down block**: a recurring daily event, 11:30pm–7:30am,
-  was created directly on the primary Google Calendar via the connector.
-  `settings.weekday_wake` / `weekend_wake` in Supabase are both set to
-  `07:30` so the app's own sleep countdown matches it. The website's
-  "block wind-down on my calendar" button and `/api/calendar/wind-down`
-  route are **not** connected to this — they're dead code unless you do
-  the manual OAuth setup below.
-- **Gmail message queue**: a Claude Code Remote Routine ("Focus app:
-  sync Gmail + Slack into message queue", hourly, self-bound to the
-  session that built this) reads unread Gmail each hour and inserts rows
-  straight into `messages_queue` via the Supabase MCP tools — bypassing
-  `/api/messages/sync` and `lib/google.js` entirely. Manage/inspect it at
-  claude.ai's Routines UI, or ask Claude in that session to change the
-  cadence, wind-down time, or stop it.
-- **Slack was dropped**: the connected Slack MCP tools only expose
-  search, not a reliable way to list DMs/mentions, so the Routine no
-  longer tries Slack at all — only Gmail feeds the message queue right
-  now. `lib/slack.js` and the manual bot-token path below are unused
-  unless you set that up.
+**Already done, independent of this setup**: a recurring daily calendar
+event, 11:30pm–7:30am, exists on your primary Google Calendar (created
+once, directly, outside of any of the machinery below — it just sits on
+your calendar permanently, nothing keeps it there). `settings.weekday_wake`
+/ `weekend_wake` in Supabase are both set to `07:30` so the app's own
+sleep countdown matches it.
 
-This means the message queue only updates while that Claude session
-stays alive and that Routine keeps firing — it is **not** the website
-running its own background job. If you want the website itself to fetch
-Gmail/Slack/Calendar live, independent of any Claude session, do the
-manual setup below instead (and then also wire the sleep widget's button
-back to `/api/calendar/wind-down`, and point `MessagesInbox`'s "sync now"
-at `/api/messages/sync` again).
+**Still needs setup**: the Gmail message-queue sync and the "block
+wind-down on my calendar" button both call `/api/calendar/wind-down` /
+`/api/messages/sync`, which need real Google credentials (see below).
+`vercel.json` already has a cron job wired to call `/api/messages/sync`
+— **but Vercel's Hobby plan only runs cron jobs once per day**, currently
+set to 13:00 UTC (6am Pacific). That means the Gmail queue only refreshes
+once a day unless you upgrade to Vercel Pro (paid, monthly) for
+higher-frequency cron — I won't do that without you asking, since it's a
+billing change. In the meantime, the "sync now" button in the app works
+on demand regardless of cron frequency.
 
-<details>
-<summary>Manual OAuth setup (only if you want the website fully
-self-sufficient)</summary>
+Slack isn't wired up at all right now (the manual bot-token path is
+documented below if you want it later, but nothing calls it yet).
 
 **Google Calendar + Gmail** — a personal OAuth client + long-lived
 refresh token, no login screen:
@@ -126,9 +114,7 @@ refresh token, no login screen:
 6. Find your Slack user ID: profile → **···** → **Copy member ID**.
 7. In Vercel, add `SLACK_BOT_TOKEN`, `SLACK_USER_ID`, then redeploy.
 
-</details>
-
-### 4. Extension sync secret (recommended once you use the extension)
+### 3. Extension sync secret (recommended once you use the extension)
 
 The browser extension talks to two of your app's API routes
 (`/api/session-state`, `/api/schoology-sync`) which have no other auth —
@@ -139,7 +125,7 @@ anyone with your app's URL could otherwise poke them.
 3. In the extension's popup (see `extension/README.md`), paste the same
    value into "Extension secret".
 
-### 5. Install the browser extension
+### 4. Install the browser extension
 
 See `extension/README.md` — load it unpacked via `chrome://extensions` in
 developer mode, then point it at your deployed app URL.
