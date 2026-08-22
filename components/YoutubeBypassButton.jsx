@@ -71,7 +71,7 @@ export default function YoutubeBypassButton({ settings, onSettingsChange }) {
         <span className="w-2 h-2 rounded-full bg-mint-500 flex-shrink-0" />
         <span className="text-ink-700">YouTube unlocked — {minsLeft}m left</span>
         <button onClick={endEarly} className="text-ink-400 hover:text-coral-500 text-xs underline">
-          end now
+          End Now
         </button>
       </div>
     );
@@ -89,7 +89,7 @@ export default function YoutubeBypassButton({ settings, onSettingsChange }) {
         style={{ transform: `scaleX(${progress})`, transitionDuration: holding ? "0ms" : "150ms" }}
       />
       <span className="relative">
-        {holding ? "keep holding…" : "hold 5s to unlock YouTube (study only)"}
+        {holding ? "Keep Holding…" : "Hold 5s to Unlock YouTube (Study Only)"}
       </span>
     </button>
   );

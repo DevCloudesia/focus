@@ -43,13 +43,14 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ["'Outfit'", "system-ui", "sans-serif"],
-        body: ["'Inter'", "system-ui", "sans-serif"],
+        display: ["'Lato'", "system-ui", "sans-serif"],
+        body: ["'Lato'", "system-ui", "sans-serif"],
         mono: ["'IBM Plex Mono'", "monospace"],
       },
       boxShadow: {
         card: "0 1px 2px rgba(24,26,32,0.04), 0 8px 24px -8px rgba(24,26,32,0.08)",
         pop: "0 2px 6px rgba(24,26,32,0.06), 0 16px 32px -12px rgba(24,26,32,0.14)",
+        glass: "0 1px 1px rgba(255,255,255,0.6) inset, 0 8px 32px -12px rgba(88,60,180,0.18)",
       },
       borderRadius: {
         xl2: "1.25rem",

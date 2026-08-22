@@ -104,15 +104,15 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center text-ink-500 bg-paper-100">
-        loading your workspace…
+      <main className="min-h-screen flex items-center justify-center text-ink-500">
+        Loading your workspace…
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-paper-100">
-      <header className="sticky top-0 z-10 bg-paper-100/90 backdrop-blur-sm border-b border-paper-300">
+    <main className="min-h-screen">
+      <header className="sticky top-0 z-10 bg-white/50 backdrop-blur-xl border-b border-white/60">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-coral-500 to-violet-500 flex-shrink-0" />

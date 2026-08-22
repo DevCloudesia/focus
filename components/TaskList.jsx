@@ -137,7 +137,7 @@ function TaskRow({ task, onToggle, onRemove, done }) {
         </div>
       </div>
       {task.source === "schoology" && (
-        <span className="text-[10px] text-violet-500 font-medium flex-shrink-0">schoology</span>
+        <span className="text-[10px] text-violet-500 font-medium flex-shrink-0">Schoology</span>
       )}
       <button
         onClick={() => onRemove(task)}

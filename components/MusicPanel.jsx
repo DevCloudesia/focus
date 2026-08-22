@@ -30,7 +30,7 @@ export default function MusicPanel({ mode, onModeChange }) {
               mode === "40hz" ? "bg-coral-500 text-white" : "text-ink-500 hover:text-ink-900"
             }`}
           >
-            40Hz focus
+            40Hz Focus
           </button>
         </div>
       </div>

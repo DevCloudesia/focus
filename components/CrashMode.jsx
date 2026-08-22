@@ -36,7 +36,7 @@ export default function CrashMode({ open, onClose, onStartBeats }) {
               </button>
             </div>
             <button onClick={onClose} className="mt-6 text-ink-400 text-xs hover:text-ink-700">
-              never mind, close
+              Never mind, close
             </button>
           </>
         )}
@@ -57,7 +57,7 @@ export default function CrashMode({ open, onClose, onStartBeats }) {
                 Open sleep / bedtime
               </Link>
               <button onClick={onClose} className="text-ink-400 text-xs hover:text-ink-700">
-                close
+                Close
               </button>
             </div>
           </>
@@ -78,7 +78,7 @@ export default function CrashMode({ open, onClose, onStartBeats }) {
                 Start 40Hz beats + show my next task
               </button>
               <button onClick={onClose} className="text-ink-400 text-xs hover:text-ink-700">
-                close
+                Close
               </button>
             </div>
           </>

@@ -8,12 +8,17 @@
 
 html,
 body {
-  background: #faf9f6;
+  background: #f4f1ea;
   color: #181a20;
 }
 
 body {
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "Lato", system-ui, sans-serif;
+  background-image: radial-gradient(circle at 8% 8%, rgba(255, 138, 92, 0.16) 0%, transparent 40%),
+    radial-gradient(circle at 92% 15%, rgba(124, 92, 252, 0.16) 0%, transparent 42%),
+    radial-gradient(circle at 25% 90%, rgba(79, 209, 197, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(255, 176, 32, 0.12) 0%, transparent 40%);
+  background-attachment: fixed;
 }
 
 ::selection {
@@ -21,7 +26,7 @@ body {
 }
 
 .font-display {
-  font-family: "Outfit", system-ui, sans-serif;
+  font-family: "Lato", system-ui, sans-serif;
 }
 
 .font-mono-num {
@@ -29,27 +34,34 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Liquid glass: translucent, blurred, soft-edged, gently luminous. */
 .card {
-  background: #ffffff;
-  border: 1px solid #f2f1ec;
-  border-radius: 1.25rem;
-  box-shadow: 0 1px 2px rgba(24, 26, 32, 0.04), 0 8px 24px -8px rgba(24, 26, 32, 0.08);
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 1.75rem;
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) inset, 0 8px 32px -12px rgba(88, 60, 180, 0.18);
 }
 
 .chip {
-  border: 1px solid #ece9e2;
-  background: #faf9f6;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #ff6a42, #ff5a36);
   color: #ffffff;
-  box-shadow: 0 4px 14px -4px rgba(255, 90, 54, 0.5);
+  border-radius: 999px;
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 4px 14px -4px rgba(255, 90, 54, 0.5);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 .btn-primary:hover {
   filter: brightness(1.05);
-  box-shadow: 0 6px 18px -4px rgba(255, 90, 54, 0.55);
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 6px 18px -4px rgba(255, 90, 54, 0.55);
 }
 .btn-primary:active {
   transform: scale(0.98);
@@ -60,6 +72,12 @@ body {
   height: 6px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #e2dfd6;
+  background: rgba(24, 26, 32, 0.15);
   border-radius: 999px;
+}
+
+input,
+select,
+textarea {
+  border-radius: 0.85rem !important;
 }

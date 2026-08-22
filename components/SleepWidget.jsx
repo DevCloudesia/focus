@@ -77,7 +77,7 @@ export default function SleepWidget({ settings, onSettingsChange }) {
       <div className="flex items-center justify-between mb-1">
         <h3 className="font-display font-semibold text-base text-ink-900">Sleep</h3>
         <span className="chip rounded-full px-2 py-0.5 text-[10px] text-ink-500 font-medium">
-          {weekend ? "weekend" : "weekday"}
+          {weekend ? "Weekend" : "Weekday"}
         </span>
       </div>
 
@@ -96,7 +96,7 @@ export default function SleepWidget({ settings, onSettingsChange }) {
             disabled={blocking}
             className="mt-2 text-violet-500 hover:text-violet-600 text-xs font-medium underline disabled:opacity-50"
           >
-            {blocking ? "adding…" : "add tonight's block to my calendar"}
+            {blocking ? "Adding…" : "Add Tonight's Block to Calendar"}
           </button>
           {blockMsg && <div className="text-ink-400 text-xs mt-1">{blockMsg}</div>}
         </div>
