@@ -101,18 +101,33 @@ refresh token, no login screen:
 8. In Vercel, add `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
    `GOOGLE_REFRESH_TOKEN` (the refresh token from step 7), then redeploy.
 
-**Slack** — a personal bot token from an app in your own workspace:
+**Slack** — a personal bot token from an app in your own workspace. Since
+bot tokens are workspace-scoped, installing the same app into a second
+workspace gets you a second token — the app supports up to 4 workspaces
+at once (see `lib/slack.js`).
 
 1. Go to https://api.slack.com/apps → **Create New App → From scratch** →
    pick your workspace.
 2. **OAuth & Permissions** → **Bot Token Scopes**, add: `channels:history`,
    `groups:history`, `im:history`, `mpim:history`, `channels:read`,
    `groups:read`, `im:read`, `mpim:read`.
-3. **Install to Workspace**, approve.
-4. Copy the **Bot User OAuth Token** (`xoxb-…`).
-5. Message the bot once (or invite it into channels you want it reading).
-6. Find your Slack user ID: profile → **···** → **Copy member ID**.
-7. In Vercel, add `SLACK_BOT_TOKEN`, `SLACK_USER_ID`, then redeploy.
+3. **App Home** → **Show Tabs → Messages Tab** → check "Allow users to
+   send Slash commands and messages from the Messages Tab" (otherwise you
+   can't DM the bot, which it needs so it has a conversation to read).
+4. **Install to Workspace**, approve.
+5. Copy the **Bot User OAuth Token** (`xoxb-…`).
+6. Message the bot once (or invite it into channels you want it reading)
+   — it can only ever read conversations it's actually a participant in,
+   not your existing DMs with other people.
+7. Find your Slack user ID: profile → **···** → **Copy member ID**.
+8. In Vercel, add `SLACK_BOT_TOKEN`, `SLACK_USER_ID` (and optionally
+   `SLACK_LABEL` to name it), then redeploy.
+
+**To add a second workspace**: repeat steps 1–7 from that other
+workspace's context (api.slack.com lets you switch which workspace
+you're installing into), then add `SLACK_BOT_TOKEN_2`, `SLACK_USER_ID_2`,
+`SLACK_LABEL_2` in Vercel instead of overwriting the first set. `_3`/`_4`
+for a third/fourth.
 
 ### 3. Extension sync secret (recommended once you use the extension)
 
