@@ -48,58 +48,81 @@ policies.
    - `DAILY_FIFTY_SUPABASE_ANON_KEY` = see `.env.example`, or grab it from https://supabase.com/dashboard/project/majxhqnyzvnbwkkcpaxw/settings/api
 5. Redeploy (Vercel → Deployments → ⋯ → Redeploy) after adding env vars.
 
-### 2. Google Calendar + Gmail (optional, one-time)
+### 2. Google Calendar + Gmail + Slack — actually set up differently than planned
 
-This uses a personal OAuth client + a long-lived refresh token — no login
-screen, since it's just you.
+The `GOOGLE_CLIENT_ID`/`SLACK_BOT_TOKEN`-style env vars below are **not
+what's actually wired up**. Since Gmail, Google Calendar, and Slack were
+already connected as claude.ai connectors in the session that built this,
+we used those instead of building separate OAuth apps:
+
+- **Calendar wind-down block**: a recurring daily event, 11:30pm–7:30am,
+  was created directly on the primary Google Calendar via the connector.
+  `settings.weekday_wake` / `weekend_wake` in Supabase are both set to
+  `07:30` so the app's own sleep countdown matches it. The website's
+  "block wind-down on my calendar" button and `/api/calendar/wind-down`
+  route are **not** connected to this — they're dead code unless you do
+  the manual OAuth setup below.
+- **Gmail/Slack message queue**: a Claude Code Remote Routine ("Focus
+  app: sync Gmail + Slack into message queue", hourly, self-bound to the
+  session that built this) reads unread Gmail and recent Slack DMs each
+  hour and inserts rows straight into `messages_queue` via the Supabase
+  MCP tools — bypassing `/api/messages/sync`, `lib/google.js`, and
+  `lib/slack.js` entirely. Manage/inspect it at claude.ai's Routines UI,
+  or ask Claude in that session to change the cadence, wind-down time, or
+  stop it.
+
+This means the message queue only updates while that Claude session
+stays alive and that Routine keeps firing — it is **not** the website
+running its own background job. If you want the website itself to fetch
+Gmail/Slack/Calendar live, independent of any Claude session, do the
+manual setup below instead (and then also wire the sleep widget's button
+back to `/api/calendar/wind-down`, and point `MessagesInbox`'s "sync now"
+at `/api/messages/sync` again).
+
+<details>
+<summary>Manual OAuth setup (only if you want the website fully
+self-sufficient)</summary>
+
+**Google Calendar + Gmail** — a personal OAuth client + long-lived
+refresh token, no login screen:
 
 1. Go to https://console.cloud.google.com/ → create a new project (or
    reuse one) → **APIs & Services → Library** → enable **Google Calendar
    API** and **Gmail API**.
 2. **APIs & Services → OAuth consent screen** → User type "External" →
    fill the required fields → add your own Google account as a **test
-   user** (this keeps it in "testing" mode, which is fine for personal
-   use — no Google review needed).
+   user** (keeps it in "testing" mode — fine for personal use, no Google
+   review needed).
 3. **APIs & Services → Credentials → Create Credentials → OAuth client
    ID** → Application type "Web application" → add
    `https://developers.google.com/oauthplayground` as an authorized
    redirect URI → note the **Client ID** and **Client Secret**.
-4. Go to https://developers.google.com/oauthplayground →
-   click the gear icon (top right) → check **"Use your own OAuth
-   credentials"** → paste your Client ID/Secret.
-5. In the left panel, find and select these scopes, then **Authorize
-   APIs**:
+4. Go to https://developers.google.com/oauthplayground → gear icon (top
+   right) → check **"Use your own OAuth credentials"** → paste your
+   Client ID/Secret.
+5. In the left panel, select these scopes, then **Authorize APIs**:
    - `https://www.googleapis.com/auth/calendar.events`
    - `https://www.googleapis.com/auth/gmail.readonly`
 6. Sign in with your Google account, approve access.
 7. Click **Exchange authorization code for tokens** — copy the
    **Refresh token** shown.
-8. In Vercel, add:
-   - `GOOGLE_CLIENT_ID`
-   - `GOOGLE_CLIENT_SECRET`
-   - `GOOGLE_REFRESH_TOKEN` (the refresh token from step 7)
-9. Redeploy.
+8. In Vercel, add `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
+   `GOOGLE_REFRESH_TOKEN` (the refresh token from step 7), then redeploy.
 
-The sleep widget's "block wind-down on my calendar" button and the Gmail
-half of the messages queue will now work.
-
-### 3. Slack (optional, one-time)
+**Slack** — a personal bot token from an app in your own workspace:
 
 1. Go to https://api.slack.com/apps → **Create New App → From scratch** →
    pick your workspace.
-2. **OAuth & Permissions** → under **Bot Token Scopes**, add:
-   - `channels:history`, `groups:history`, `im:history`, `mpim:history`
-   - `channels:read`, `groups:read`, `im:read`, `mpim:read`
+2. **OAuth & Permissions** → **Bot Token Scopes**, add: `channels:history`,
+   `groups:history`, `im:history`, `mpim:history`, `channels:read`,
+   `groups:read`, `im:read`, `mpim:read`.
 3. **Install to Workspace**, approve.
 4. Copy the **Bot User OAuth Token** (`xoxb-…`).
-5. Invite the bot to your DMs by messaging it once, or invite it into any
-   channels you want it reading.
-6. Find your own Slack user ID: click your profile → **···** → **Copy
-   member ID** (`U0XXXXXXX`).
-7. In Vercel, add:
-   - `SLACK_BOT_TOKEN`
-   - `SLACK_USER_ID`
-8. Redeploy.
+5. Message the bot once (or invite it into channels you want it reading).
+6. Find your Slack user ID: profile → **···** → **Copy member ID**.
+7. In Vercel, add `SLACK_BOT_TOKEN`, `SLACK_USER_ID`, then redeploy.
+
+</details>
 
 ### 4. Extension sync secret (recommended once you use the extension)
 
