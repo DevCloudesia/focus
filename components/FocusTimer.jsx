@@ -11,10 +11,10 @@ import {
 } from "@/lib/sessionEngine";
 
 const PHASE_COPY = {
-  working: { label: "Deep work", tone: "text-mist-200" },
-  awaiting_confirm: { label: "Done, or keep going?", tone: "text-ember-400" },
-  extended: { label: "Extended session", tone: "text-dusk-400" },
-  extended_complete: { label: "Time's up", tone: "text-ember-500" },
+  working: { label: "Deep work", tone: "text-ink-500", ring: "stroke-violet-500" },
+  awaiting_confirm: { label: "Done, or keep going?", tone: "text-coral-600", ring: "stroke-coral-500" },
+  extended: { label: "Extended session", tone: "text-violet-600", ring: "stroke-violet-500" },
+  extended_complete: { label: "Time's up", tone: "text-coral-600", ring: "stroke-coral-500" },
 };
 
 export default function FocusTimer({
@@ -54,25 +54,35 @@ export default function FocusTimer({
 
   if (!session) {
     return (
-      <div className="card p-8 flex flex-col items-center gap-5 text-center">
-        <div className="chip rounded-full px-3 py-1 text-xs text-mist-400 uppercase tracking-wide">
+      <div className="card p-10 sm:p-14 flex flex-col items-center gap-6 text-center relative overflow-hidden">
+        <div
+          className="absolute -top-24 -right-24 w-64 h-64 rounded-full opacity-60 blur-3xl"
+          style={{ background: "radial-gradient(circle, #FFE4DA 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full opacity-60 blur-3xl"
+          style={{ background: "radial-gradient(circle, #EBE5FF 0%, transparent 70%)" }}
+        />
+        <div className="chip rounded-full px-3 py-1 text-xs text-ink-500 uppercase tracking-wide relative">
           {weekend ? "Weekend mode" : "Weekday mode"}
         </div>
-        <h2 className="font-display text-3xl text-mist-100">Ready when you are</h2>
-        <p className="text-mist-400 text-sm max-w-sm">
-          A session starts a 45-minute block. If you're still going and don't
-          confirm by 50 minutes, it quietly runs to 100 — then a longer break.
+        <h2 className="font-display font-bold text-4xl sm:text-5xl text-ink-900 relative">
+          Ready when you are
+        </h2>
+        <p className="text-ink-500 relative max-w-md">
+          A session starts a 45-minute block. Confirm within 5 minutes to end
+          it — stay quiet and it quietly runs to 100, then a longer break.
         </p>
-        <div className="flex gap-3 mt-2">
+        <div className="flex flex-col sm:flex-row gap-3 mt-2 relative">
           <button
             onClick={() => onStart(defaultType)}
-            className="rounded-full bg-ember-500 hover:bg-ember-400 text-ink-950 font-semibold px-6 py-3 transition"
+            className="btn-primary rounded-full font-display font-semibold px-8 py-4 text-lg"
           >
             {defaultType === "review" ? "Start review session" : "Start focus session"}
           </button>
           <button
             onClick={onCrash}
-            className="chip rounded-full px-5 py-3 text-mist-300 hover:text-mist-100 transition text-sm"
+            className="chip rounded-full px-6 py-4 text-ink-700 hover:bg-paper-200 transition text-sm font-medium"
           >
             I can't focus right now
           </button>
@@ -84,16 +94,16 @@ export default function FocusTimer({
   const copy = PHASE_COPY[phase] || PHASE_COPY.working;
 
   return (
-    <div className="card p-8 flex flex-col items-center gap-5 text-center">
-      <div className={`text-xs uppercase tracking-wide ${copy.tone}`}>{copy.label}</div>
-      <div className="font-mono-num text-6xl text-mist-100">{formatClock(remainingSec)}</div>
-      <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+    <div className="card p-10 sm:p-14 flex flex-col items-center gap-6 text-center">
+      <div className={`text-xs uppercase tracking-wide font-semibold ${copy.tone}`}>{copy.label}</div>
+      <div className="font-mono-num font-semibold text-7xl text-ink-900">{formatClock(remainingSec)}</div>
+      <div className="w-full max-w-sm h-2 rounded-full bg-paper-200 overflow-hidden">
         <div
-          className="h-full bg-ember-500 transition-all duration-1000"
+          className="h-full rounded-full bg-gradient-to-r from-coral-500 to-violet-500 transition-all duration-1000"
           style={{ width: `${progressPct}%` }}
         />
       </div>
-      <p className="text-mist-400 text-sm">
+      <p className="text-ink-500 text-sm max-w-sm">
         {phase === "working" && "Confirm opens at 45 minutes."}
         {phase === "awaiting_confirm" &&
           "You're in the window — confirm now for a 10-min break, or keep going and it'll silently extend to 100."}
@@ -101,17 +111,17 @@ export default function FocusTimer({
       </p>
 
       {(phase === "working" || phase === "awaiting_confirm") && (
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             disabled={phase !== "awaiting_confirm"}
             onClick={onConfirmDone}
-            className="rounded-full bg-moss-500 disabled:bg-white/5 disabled:text-mist-400 hover:bg-moss-400 text-ink-950 font-semibold px-6 py-3 transition disabled:cursor-not-allowed"
+            className="rounded-full bg-mint-500 disabled:bg-paper-200 disabled:text-ink-400 hover:bg-mint-600 text-white font-display font-semibold px-8 py-4 transition disabled:cursor-not-allowed"
           >
             I'm done — take my break
           </button>
           <button
             onClick={onAbandon}
-            className="chip rounded-full px-5 py-3 text-mist-400 hover:text-mist-200 transition text-sm"
+            className="chip rounded-full px-6 py-4 text-ink-500 hover:bg-paper-200 transition text-sm"
           >
             Abandon session
           </button>
@@ -120,7 +130,7 @@ export default function FocusTimer({
       {phase === "extended" && (
         <button
           onClick={onAbandon}
-          className="chip rounded-full px-5 py-3 text-mist-400 hover:text-mist-200 transition text-sm"
+          className="chip rounded-full px-6 py-4 text-ink-500 hover:bg-paper-200 transition text-sm"
         >
           End early
         </button>

@@ -7,39 +7,52 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        paper: {
+          50: "#FFFFFF",
+          100: "#FAF9F6",
+          200: "#F2F1EC",
+          300: "#E8E6DD",
+        },
         ink: {
-          950: "#0a0e14",
-          900: "#10151d",
-          800: "#161d28",
-          700: "#1f2836",
-          600: "#2a3648",
+          900: "#181A20",
+          700: "#3A3D46",
+          500: "#6B6F7B",
+          400: "#9498A3",
         },
-        mist: {
-          400: "#7c8aa0",
-          300: "#a3aec0",
-          200: "#c7cfdc",
-          100: "#e7ebf2",
+        coral: {
+          600: "#E8451F",
+          500: "#FF5A36",
+          400: "#FF7A5C",
+          100: "#FFE4DA",
         },
-        ember: {
-          500: "#ff8b5e",
-          400: "#ffa580",
+        violet: {
+          600: "#5B3EE0",
+          500: "#7C5CFC",
+          400: "#9C84FD",
+          100: "#EBE5FF",
         },
-        moss: {
-          500: "#6bbf8e",
-          400: "#8fd4ab",
+        mint: {
+          600: "#0D9488",
+          500: "#14B8A6",
+          400: "#4FD1C5",
+          100: "#D9F7F1",
         },
-        dusk: {
-          500: "#8b7cf6",
-          400: "#a89af8",
+        sun: {
+          500: "#FFB020",
+          100: "#FFF2D9",
         },
       },
       fontFamily: {
-        display: ["'Fraunces'", "Georgia", "serif"],
+        display: ["'Outfit'", "system-ui", "sans-serif"],
         body: ["'Inter'", "system-ui", "sans-serif"],
         mono: ["'IBM Plex Mono'", "monospace"],
       },
-      animation: {
-        "pulse-slow": "pulse 3.5s ease-in-out infinite",
+      boxShadow: {
+        card: "0 1px 2px rgba(24,26,32,0.04), 0 8px 24px -8px rgba(24,26,32,0.08)",
+        pop: "0 2px 6px rgba(24,26,32,0.06), 0 16px 32px -12px rgba(24,26,32,0.14)",
+      },
+      borderRadius: {
+        xl2: "1.25rem",
       },
     },
   },

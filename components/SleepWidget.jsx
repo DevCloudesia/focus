@@ -14,6 +14,7 @@ export default function SleepWidget({ settings, onSettingsChange }) {
   const [now, setNow] = useState(() => new Date());
   const [blocking, setBlocking] = useState(false);
   const [blockMsg, setBlockMsg] = useState(null);
+
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(id);
@@ -32,12 +33,12 @@ export default function SleepWidget({ settings, onSettingsChange }) {
 
   const urgency =
     minsUntilBed === null
-      ? "text-mist-400"
+      ? "text-ink-500"
       : minsUntilBed < 0
-      ? "text-ember-500"
+      ? "text-coral-600"
       : minsUntilBed < 60
-      ? "text-ember-400"
-      : "text-mist-200";
+      ? "text-sun-500"
+      : "text-ink-900";
 
   const updateWake = async (value) => {
     const key = weekend ? "weekend_wake" : "weekday_wake";
@@ -68,17 +69,19 @@ export default function SleepWidget({ settings, onSettingsChange }) {
 
   return (
     <div id="sleep" className="card p-6">
-      <h3 className="font-display text-lg text-mist-100 mb-1">Sleep</h3>
-      <p className="text-mist-500 text-xs mb-4">
-        Goal: {goalHours}h {weekend ? "(weekend)" : "(weekday)"}
-      </p>
+      <div className="flex items-center justify-between mb-1">
+        <h3 className="font-display font-semibold text-base text-ink-900">Sleep</h3>
+        <span className="chip rounded-full px-2 py-0.5 text-[10px] text-ink-500 font-medium">
+          {goalHours}h goal
+        </span>
+      </div>
 
       {bedtime && (
-        <div className="mb-4">
-          <div className={`font-mono-num text-3xl ${urgency}`}>
+        <div className="my-3">
+          <div className={`font-mono-num font-semibold text-3xl ${urgency}`}>
             {bedtime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </div>
-          <div className="text-mist-500 text-xs mt-1">
+          <div className="text-ink-400 text-xs mt-1">
             {minsUntilBed < 0
               ? `${Math.abs(minsUntilBed)} min past target bedtime`
               : `target bedtime, in ${minsUntilBed} min`}
@@ -86,20 +89,20 @@ export default function SleepWidget({ settings, onSettingsChange }) {
           <button
             onClick={addWindDownBlock}
             disabled={blocking}
-            className="mt-2 text-dusk-400 hover:text-dusk-300 text-xs underline disabled:opacity-50"
+            className="mt-2 text-violet-500 hover:text-violet-600 text-xs font-medium underline disabled:opacity-50"
           >
             {blocking ? "adding…" : "block wind-down on my calendar"}
           </button>
-          {blockMsg && <div className="text-mist-500 text-xs mt-1">{blockMsg}</div>}
+          {blockMsg && <div className="text-ink-400 text-xs mt-1">{blockMsg}</div>}
         </div>
       )}
 
-      <label className="text-xs text-mist-400 block mb-1">Wake time ({weekend ? "weekend" : "weekday"})</label>
+      <label className="text-xs text-ink-500 block mb-1">Wake time ({weekend ? "weekend" : "weekday"})</label>
       <input
         type="time"
         defaultValue={wakeTime?.slice(0, 5) || (weekend ? "08:30" : "06:30")}
         onBlur={(e) => updateWake(e.target.value)}
-        className="bg-white/5 rounded-lg px-3 py-2 text-sm text-mist-100 outline-none focus:ring-1 focus:ring-dusk-500"
+        className="bg-paper-100 border border-paper-300 rounded-lg px-3 py-2 text-sm text-ink-900 outline-none focus:ring-2 focus:ring-violet-400 focus:border-violet-400"
       />
     </div>
   );

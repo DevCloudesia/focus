@@ -5,8 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import FocusTimer from "@/components/FocusTimer";
 import MusicPanel from "@/components/MusicPanel";
 import CrashMode from "@/components/CrashMode";
-import TaskList from "@/components/TaskList";
-import ReviewPanel from "@/components/ReviewPanel";
+import PlannerCard from "@/components/PlannerCard";
 import SleepWidget from "@/components/SleepWidget";
 import MotivationStrip from "@/components/MotivationStrip";
 import SatProgress from "@/components/SatProgress";
@@ -66,24 +65,22 @@ export default function Dashboard() {
 
   const confirmDone = useCallback(async () => {
     if (!session) return;
-    const { session: updated } = await fetchJSON(`/api/sessions/${session.id}`, {
+    await fetchJSON(`/api/sessions/${session.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "confirm_done" }),
     });
     setSession(null);
-    return updated;
   }, [session]);
 
   const forceEnd = useCallback(async () => {
     if (!session) return;
-    const { session: updated } = await fetchJSON(`/api/sessions/${session.id}`, {
+    await fetchJSON(`/api/sessions/${session.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "force_end" }),
     });
     setSession(null);
-    return updated;
   }, [session]);
 
   const abandon = useCallback(async () => {
@@ -105,38 +102,41 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center text-mist-300">
+      <main className="min-h-screen flex items-center justify-center text-ink-500 bg-paper-100">
         loading your workspace…
       </main>
     );
   }
 
   return (
-    <main className={`min-h-screen pb-24 ${weekend ? "bg-ink-950" : "bg-ink-950"}`}>
-      <div className="max-w-6xl mx-auto px-6 pt-10">
-        <header className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-display text-2xl text-mist-100">
-              {weekend ? "Weekend — slower, review-focused" : "Focus"}
-            </h1>
-            <p className="text-mist-400 text-sm mt-1">
-              {new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
-            </p>
+    <main className="min-h-screen bg-paper-100">
+      <header className="sticky top-0 z-10 bg-paper-100/90 backdrop-blur-sm border-b border-paper-300">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-coral-500 to-violet-500 flex-shrink-0" />
+            <span className="font-display font-bold text-lg text-ink-900">Focus</span>
+            <span className="chip rounded-full px-2.5 py-1 text-[11px] text-ink-500 font-medium ml-1">
+              {weekend ? "Weekend" : "Weekday"}
+            </span>
           </div>
           <div className="flex items-center gap-3">
             <SatProgress />
             <Link
               href="/settings"
-              className="chip rounded-full px-4 py-2 text-sm text-mist-300 hover:text-mist-100 transition"
+              className="chip rounded-full px-4 py-2 text-sm text-ink-700 hover:bg-paper-200 transition font-medium"
             >
               Settings
             </Link>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <MotivationStrip settings={settings} />
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        <p className="text-ink-500 text-sm mb-6">
+          {new Date().toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" })}
+        </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 flex flex-col gap-6">
             <FocusTimer
               session={session}
@@ -153,9 +153,9 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-col gap-6">
+            <MotivationStrip settings={settings} />
             <SleepWidget settings={settings} onSettingsChange={setSettings} />
-            <TaskList tasks={tasks} onChange={refreshTasks} weekend={weekend} />
-            <ReviewPanel weekend={weekend} />
+            <PlannerCard tasks={tasks} onTasksChange={refreshTasks} weekend={weekend} />
           </div>
         </div>
       </div>

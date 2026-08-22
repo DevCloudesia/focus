@@ -49,31 +49,30 @@ export default function ReviewPanel({ weekend }) {
   const upcoming = blocks.filter((b) => !b.completed);
 
   return (
-    <div className="card p-6">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-display text-lg text-mist-100">Review blocks</h3>
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-ink-500 text-xs">
+          1 / 2 / 5-day and 2-week spacing, as weekly batches.
+        </p>
         {weekend && (
-          <span className="chip rounded-full px-2 py-0.5 text-[10px] text-dusk-400">
+          <span className="chip rounded-full px-2 py-0.5 text-[10px] text-violet-600 font-medium">
             HW done — review day
           </span>
         )}
       </div>
-      <p className="text-mist-500 text-xs mb-4">
-        1 / 2 / 5 day and 2-week spacing, as weekly batches — not per-task.
-      </p>
 
-      <div className="flex flex-col gap-1.5 mb-4 max-h-40 overflow-y-auto scrollbar-thin">
+      <div className="flex flex-col gap-1.5 my-4 max-h-40 overflow-y-auto scrollbar-thin">
         {upcoming.length === 0 && (
-          <p className="text-mist-500 text-sm text-center py-2">No review blocks queued.</p>
+          <p className="text-ink-400 text-sm text-center py-4">No review blocks queued.</p>
         )}
         {upcoming.map((b) => (
-          <div key={b.id} className="flex items-center gap-2 text-sm">
+          <div key={b.id} className="flex items-center gap-2.5 text-sm py-1">
             <button
               onClick={() => toggle(b)}
-              className="w-4 h-4 rounded-full border border-mist-500 flex-shrink-0"
+              className="w-5 h-5 rounded-full border-2 border-paper-300 hover:border-mint-400 flex-shrink-0 transition"
             />
-            <span className="text-mist-300 flex-1">{KIND_LABEL[b.kind]}</span>
-            <span className="text-mist-500 text-xs">{b.block_date}</span>
+            <span className="text-ink-900 flex-1">{KIND_LABEL[b.kind]}</span>
+            <span className="text-ink-400 text-xs">{b.block_date}</span>
           </div>
         ))}
       </div>
@@ -81,19 +80,19 @@ export default function ReviewPanel({ weekend }) {
       <div className="flex gap-2 flex-wrap">
         <button
           onClick={() => addBlock("daily_short")}
-          className="chip rounded-full px-3 py-1.5 text-xs text-mist-300 hover:bg-white/5"
+          className="chip rounded-full px-3 py-1.5 text-xs text-ink-700 hover:bg-paper-200 font-medium"
         >
           + daily short
         </button>
         <button
           onClick={() => addBlock("weekend_big")}
-          className="chip rounded-full px-3 py-1.5 text-xs text-mist-300 hover:bg-white/5"
+          className="chip rounded-full px-3 py-1.5 text-xs text-ink-700 hover:bg-paper-200 font-medium"
         >
           + weekend big
         </button>
         <button
           onClick={() => addBlock("pre_exam")}
-          className="chip rounded-full px-3 py-1.5 text-xs text-mist-300 hover:bg-white/5"
+          className="chip rounded-full px-3 py-1.5 text-xs text-ink-700 hover:bg-paper-200 font-medium"
         >
           + pre-exam
         </button>

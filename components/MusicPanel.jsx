@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 // Curated YouTube playlist/video IDs. Swap these for whatever you actually
 // like listening to — see README "Customizing the music panel".
 const TRACKS = {
@@ -16,41 +18,62 @@ const TRACKS = {
 
 export default function MusicPanel({ mode, onModeChange }) {
   const list = TRACKS[mode];
+  const [activeId, setActiveId] = useState(list[0].id);
+  const active = list.find((t) => t.id === activeId) || list[0];
+
+  const switchMode = (next) => {
+    onModeChange(next);
+    setActiveId(TRACKS[next][0].id);
+  };
+
   return (
     <div className="card p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display text-lg text-mist-100">Sound</h3>
+        <h3 className="font-display font-semibold text-lg text-ink-900">Sound</h3>
         <div className="chip rounded-full p-1 flex text-xs">
           <button
-            onClick={() => onModeChange("ambient")}
-            className={`rounded-full px-3 py-1 transition ${
-              mode === "ambient" ? "bg-white/10 text-mist-100" : "text-mist-400"
+            onClick={() => switchMode("ambient")}
+            className={`rounded-full px-3 py-1.5 transition font-medium ${
+              mode === "ambient" ? "bg-violet-500 text-white" : "text-ink-500 hover:text-ink-900"
             }`}
           >
             Ambient
           </button>
           <button
-            onClick={() => onModeChange("40hz")}
-            className={`rounded-full px-3 py-1 transition ${
-              mode === "40hz" ? "bg-white/10 text-mist-100" : "text-mist-400"
+            onClick={() => switchMode("40hz")}
+            className={`rounded-full px-3 py-1.5 transition font-medium ${
+              mode === "40hz" ? "bg-coral-500 text-white" : "text-ink-500 hover:text-ink-900"
             }`}
           >
             40Hz focus
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+      <div className="rounded-xl overflow-hidden bg-paper-200 mb-3">
+        <iframe
+          key={active.id}
+          className="w-full aspect-video"
+          src={`https://www.youtube-nocookie.com/embed/${active.id}?rel=0&autoplay=0`}
+          title={active.label}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+
+      <div className="flex gap-2 flex-wrap">
         {list.map((track) => (
-          <div key={track.id} className="rounded-xl overflow-hidden bg-black/30">
-            <iframe
-              className="w-full aspect-video"
-              src={`https://www.youtube-nocookie.com/embed/${track.id}?rel=0`}
-              title={track.label}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-            <div className="px-3 py-2 text-xs text-mist-400">{track.label}</div>
-          </div>
+          <button
+            key={track.id}
+            onClick={() => setActiveId(track.id)}
+            className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+              track.id === activeId
+                ? "bg-ink-900 text-white"
+                : "chip text-ink-500 hover:text-ink-900"
+            }`}
+          >
+            {track.label}
+          </button>
         ))}
       </div>
     </div>

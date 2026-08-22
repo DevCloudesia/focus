@@ -22,23 +22,34 @@ export default function MotivationStrip({ settings }) {
   const deadlines = settings?.college_deadlines || [];
 
   return (
-    <div className="card px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-      <p className="font-display text-mist-200 text-sm italic flex-1">"{quote}"</p>
-      <div className="flex gap-3 flex-wrap">
+    <div className="card p-6 bg-gradient-to-br from-violet-100 via-white to-coral-100">
+      <p className="font-display font-medium text-ink-900 text-base leading-snug mb-4">
+        "{quote}"
+      </p>
+      <div className="flex flex-col gap-2">
         {satDays !== null && (
-          <div className="chip rounded-full px-3 py-1.5 text-xs text-mist-300">
-            SAT in <span className="text-ember-400 font-semibold">{satDays}d</span>
+          <div className="flex items-center justify-between">
+            <span className="text-ink-500 text-xs">SAT</span>
+            <span className="font-mono-num font-semibold text-coral-600 text-sm">{satDays}d</span>
           </div>
         )}
-        {deadlines.slice(0, 2).map((d) => {
+        {deadlines.slice(0, 3).map((d) => {
           const days = daysUntil(d.date);
           if (days === null) return null;
           return (
-            <div key={d.label} className="chip rounded-full px-3 py-1.5 text-xs text-mist-300">
-              {d.label} in <span className="text-dusk-400 font-semibold">{days}d</span>
+            <div key={d.label} className="flex items-center justify-between">
+              <span className="text-ink-500 text-xs truncate pr-2">{d.label}</span>
+              <span className="font-mono-num font-semibold text-violet-600 text-sm flex-shrink-0">
+                {days}d
+              </span>
             </div>
           );
         })}
+        {satDays === null && deadlines.length === 0 && (
+          <p className="text-ink-400 text-xs">
+            Set your SAT date and deadlines in Settings.
+          </p>
+        )}
       </div>
     </div>
   );
