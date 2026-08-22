@@ -67,6 +67,14 @@ chrome.runtime.onStartup.addListener(tick);
 chrome.runtime.onInstalled.addListener(tick);
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "FORCE_TICK") {
+    // The blocked page just unlocked YouTube via /api/youtube-bypass —
+    // rebuild the block rules immediately instead of waiting up to ~20s
+    // for the next scheduled poll.
+    tick().then(() => sendResponse({ ok: true }));
+    return true;
+  }
+
   if (message.type !== "SCHOOLOGY_SYNC") return;
 
   (async () => {

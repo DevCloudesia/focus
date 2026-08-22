@@ -193,11 +193,12 @@ editable in Settings.
 
 Blocked sites are fixed to just `youtube.com` during active weekday work
 sessions (no add/remove UI — see `extension/README.md` to install the
-blocker). The "hold 5s to unlock YouTube" button on the dashboard
-(`components/YoutubeBypassButton.jsx`) sets a 90-minute bypass window
-(`settings.youtube_bypass_until` in Supabase) that `/api/session-state`
-excludes from the blocked list while active — for when you actually need
-a YouTube video for studying.
+blocker). The "hold 5s to unlock YouTube" button lives right on the
+extension's blocked page (`extension/blocked.html` / `blocked.js`) — no
+detour through the dashboard. Holding it calls `/api/youtube-bypass`,
+which sets a 90-minute bypass window (`settings.youtube_bypass_until` in
+Supabase) that `/api/session-state` excludes from the blocked list while
+active, for when you actually need a YouTube video for studying.
 
 ## Weekly Schoology update via ChatGPT
 

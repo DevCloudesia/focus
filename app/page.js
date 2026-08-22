@@ -11,7 +11,6 @@ import MotivationStrip from "@/components/MotivationStrip";
 import SatProgress from "@/components/SatProgress";
 import MessagesInbox from "@/components/MessagesInbox";
 import CalendarPanel from "@/components/CalendarPanel";
-import YoutubeBypassButton from "@/components/YoutubeBypassButton";
 import TimeMark from "@/components/TimeMark";
 import { isWeekend } from "@/lib/dates";
 import { getGreeting } from "@/lib/timeBand";
@@ -163,9 +162,8 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="area-sound flex flex-col gap-3 min-h-0 overflow-y-auto">
+          <div className="area-sound flex flex-col min-h-0">
             <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
-            <YoutubeBypassButton settings={settings} onSettingsChange={setSettings} />
           </div>
 
           <div className="area-messages">

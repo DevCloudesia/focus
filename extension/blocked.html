@@ -8,29 +8,91 @@
         background: #faf9f6;
         color: #181a20;
         font-family: system-ui, sans-serif;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        gap: 12px;
+        gap: 14px;
+        padding: 24px;
+        box-sizing: border-box;
       }
       h1 {
         font-weight: 700;
+        margin: 0;
       }
       p {
         color: #6b6f7b;
         max-width: 360px;
+        margin: 0;
       }
-      a {
-        color: #ff5a36;
+      button {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(24, 26, 32, 0.12);
+        background: #fff;
+        color: #40434c;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-size: 14px;
+        font-family: inherit;
+        cursor: pointer;
+        user-select: none;
+        min-width: 280px;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      button .fill {
+        position: absolute;
+        inset: 0;
+        background: #d6f5e3;
+        transform-origin: left;
+        transform: scaleX(0);
+        transition: transform 0.15s ease;
+      }
+      button .label {
+        position: relative;
+      }
+      #unlocked-view {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      #unlocked-view a {
+        background: #ff5a36;
+        color: #fff;
+        border-radius: 999px;
+        padding: 12px 22px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      #hint {
+        font-size: 12px;
+        color: #9aa0ab;
+        max-width: 320px;
       }
     </style>
   </head>
   <body>
-    <h1>You're in a focus session.</h1>
-    <p>This site is blocked until your session ends. Back to it in a bit.</p>
+    <div id="blocked-view">
+      <h1>You're in a focus session.</h1>
+      <p>This site is blocked until your session ends. If it's for real studying, hold the button below.</p>
+      <button id="unlock-btn">
+        <span class="fill" id="unlock-fill"></span>
+        <span class="label" id="unlock-label">Hold 5s to Unlock YouTube (Study Only)</span>
+      </button>
+      <div id="hint"></div>
+    </div>
+    <div id="unlocked-view">
+      <h1>Unlocked for 90 minutes.</h1>
+      <p>Study well — it'll re-lock itself when the time's up.</p>
+      <a href="https://www.youtube.com/">Open YouTube</a>
+    </div>
+    <script src="blocked.js"></script>
   </body>
 </html>

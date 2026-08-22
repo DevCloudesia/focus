@@ -86,41 +86,48 @@ export default function MusicPanel({ mode, onModeChange }) {
   };
 
   return (
-    <div className="relative rounded-[1.75rem] overflow-hidden flex-1 min-h-[130px] shrink-0 border border-white/40 shadow-[0_8px_32px_-12px_rgba(88,60,180,0.22)]">
-      <div ref={mountRef} className="absolute inset-0" />
-
-      <div className="absolute top-2.5 right-2.5 flex text-xs rounded-full p-1 gap-0.5 bg-black/35 backdrop-blur-md border border-white/15">
-        <button
-          onClick={() => onModeChange("ambient")}
-          className={`rounded-full px-2.5 py-1 transition font-medium ${
-            mode === "ambient" ? "btn-primary" : "text-white/80 hover:text-white"
-          }`}
-        >
-          Ambient
-        </button>
-        <button
-          onClick={() => onModeChange("40hz")}
-          className={`rounded-full px-2.5 py-1 transition font-medium ${
-            mode === "40hz" ? "btn-primary" : "text-white/80 hover:text-white"
-          }`}
-        >
-          40Hz
-        </button>
+    <div className="flex-1 min-h-[150px] shrink-0 flex flex-col gap-2">
+      {/* Mode toggle lives above the player, not on top of it — Spotify's
+          own embed already uses its corners for its own controls (like,
+          more, external link), so overlaying there collides with them. */}
+      <div className="shrink-0 flex justify-end">
+        <div className="chip rounded-full p-1 flex text-xs gap-0.5">
+          <button
+            onClick={() => onModeChange("ambient")}
+            className={`rounded-full px-2.5 py-1 transition font-medium ${
+              mode === "ambient" ? "btn-primary" : "text-ink-500 hover:text-ink-900"
+            }`}
+          >
+            Ambient
+          </button>
+          <button
+            onClick={() => onModeChange("40hz")}
+            className={`rounded-full px-2.5 py-1 transition font-medium ${
+              mode === "40hz" ? "btn-primary" : "text-ink-500 hover:text-ink-900"
+            }`}
+          >
+            40Hz
+          </button>
+        </div>
       </div>
 
-      {ready && !playing && (
-        <button
-          onClick={start}
-          className="absolute inset-0 flex items-center justify-center bg-ink-900/45 backdrop-blur-sm text-white font-display font-semibold gap-2 transition hover:bg-ink-900/55"
-        >
-          <span className="w-11 h-11 rounded-full btn-primary flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white ml-0.5">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </span>
-          Start {playlist.label}
-        </button>
-      )}
+      <div className="relative rounded-[1.75rem] overflow-hidden flex-1 min-h-[110px] border border-white/40 shadow-[0_8px_32px_-12px_rgba(88,60,180,0.22)]">
+        <div ref={mountRef} className="absolute inset-0" />
+
+        {ready && !playing && (
+          <button
+            onClick={start}
+            className="absolute inset-0 flex items-center justify-center bg-ink-900/45 backdrop-blur-sm text-white font-display font-semibold gap-2 transition hover:bg-ink-900/55"
+          >
+            <span className="w-11 h-11 rounded-full btn-primary flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white ml-0.5">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+            Start {playlist.label}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
