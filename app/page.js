@@ -22,6 +22,13 @@ async function fetchJSON(url, opts) {
   return body;
 }
 
+// Vercel's Hobby plan only actually runs a cron once a day no matter what
+// schedule you give it (see vercel.json + README), so the daily cron alone
+// can't deliver a same-day resync. This client-side poll fills the gap
+// whenever the dashboard tab is actually open — it's best-effort, not a
+// replacement for the cron, which still covers the "tab closed all day" case.
+const SCHOOLOGY_SYNC_MS = 2 * 60 * 60 * 1000;
+
 export default function Dashboard() {
   const [session, setSession] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -53,6 +60,18 @@ export default function Dashboard() {
     const id = setInterval(refreshSession, 15000);
     return () => clearInterval(id);
   }, [refreshSession, refreshTasks, refreshSettings]);
+
+  useEffect(() => {
+    const sync = () => {
+      fetch("/api/schoology-ics-sync", { method: "POST" })
+        .then(refreshTasks)
+        .catch(() => {});
+    };
+    sync();
+    const id = setInterval(sync, SCHOOLOGY_SYNC_MS);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount, then on its own interval
+  }, []);
 
   const startSession = useCallback(
     async (type = "work", taskId = null) => {

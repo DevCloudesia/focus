@@ -218,7 +218,11 @@ needed, so tasks stay in sync with zero manual work.
    your assignment calendar — so only ever add it as a Vercel environment
    variable, never commit it to the repo (it's public).
 3. `vercel.json` runs `/api/schoology-ics-sync` once a day (Hobby plan
-   limit, same as the Gmail sync). Each run:
+   limit, same as the Gmail sync) — but the dashboard also polls that same
+   endpoint every 2 hours on its own, client-side, while a tab is open, so
+   new/changed assignments show up same-day without waiting on the cron.
+   The cron is what still catches it on a day nobody opens the dashboard.
+   Each run:
    - Deletes any *open* Schoology-sourced task that isn't tracked by a
      stable feed ID yet — this is a one-time cleanup the first time it
      runs, clearing out anything from the old manual-paste flow below so

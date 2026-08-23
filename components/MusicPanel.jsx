@@ -36,9 +36,6 @@ function pickRandom(list) {
 
 // Spotify's compact bar kicks in below this — never ask for less.
 const MIN_PLAYER_HEIGHT = 152;
-// Ignore sub-pixel/noise-level resize events; only rebuild the embed for a
-// change big enough to matter (e.g. Messages above it collapsing/expanding).
-const RESIZE_THRESHOLD = 24;
 
 export default function MusicPanel({ mode, onModeChange }) {
   const boxRef = useRef(null);
@@ -47,62 +44,52 @@ export default function MusicPanel({ mode, onModeChange }) {
   const [playlist, setPlaylist] = useState(() => pickRandom(PLAYLISTS[mode]));
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
-  const [height, setHeight] = useState(0);
 
   // New random playlist from the mode's pool each time mode changes.
   useEffect(() => {
     setPlaylist(pickRandom(PLAYLISTS[mode]));
   }, [mode]);
 
-  // Spotify's embed doesn't support fluid/percentage heights — it needs an
-  // explicit pixel number, and taller values don't just stretch the same
-  // compact bar, they show more of the track list. So instead of guessing
-  // a fixed size, measure how much room the box actually has (which
-  // dashboard layout already decides — see .area-left in globals.css) and
-  // ask Spotify for exactly that.
+  // Build the controller exactly once, on mount. Spotify's createController
+  // only accepts a fixed pixel height as a *seed* — but the iframe it
+  // creates underneath is a normal DOM element, so right after creation we
+  // override its inline width/height to 100%, letting it fill this box via
+  // plain CSS from then on. That means any later layout shift (Messages
+  // above it collapsing on a Gmail dismiss, a viewport resize, whatever)
+  // just resizes the box — no rebuild, no reload, no interrupted playback.
   useEffect(() => {
-    if (!boxRef.current) return;
-    const observer = new ResizeObserver((entries) => {
-      const h = Math.round(entries[0].contentRect.height);
-      setHeight((prev) => (Math.abs(prev - h) > RESIZE_THRESHOLD ? h : prev));
-    });
-    observer.observe(boxRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  // (Re)build the controller whenever the measured height actually moves —
-  // the API has no resize call, so a real size change means tearing down
-  // and recreating at the new size. Preserves play state across a rebuild.
-  useEffect(() => {
-    if (!height || height < MIN_PLAYER_HEIGHT || !mountRef.current) return;
+    if (!mountRef.current) return;
     let cancelled = false;
-    const resumePlaying = playing;
+    const seedHeight = Math.max(boxRef.current?.clientHeight || 0, MIN_PLAYER_HEIGHT);
 
     loadSpotifyIframeApi().then((IFrameAPI) => {
       if (cancelled || !mountRef.current) return;
-      controllerRef.current?.destroy?.();
-      mountRef.current.replaceChildren();
-      setReady(false);
       IFrameAPI.createController(
         mountRef.current,
-        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height },
+        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height: seedHeight },
         (controller) => {
           if (cancelled) return;
           controllerRef.current = controller;
+          const iframe = mountRef.current.querySelector("iframe");
+          if (iframe) {
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+          }
           setReady(true);
           controller.addListener("playback_update", (e) => {
             setPlaying(!e.data.isPaused);
           });
-          if (resumePlaying) controller.play();
         }
       );
     });
 
     return () => {
       cancelled = true;
+      controllerRef.current?.destroy?.();
+      controllerRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only rebuild on real size changes
-  }, [height]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- build once; track changes handled below, never rebuild on resize
+  }, []);
 
   // Swap tracks on an existing controller instead of rebuilding it.
   useEffect(() => {

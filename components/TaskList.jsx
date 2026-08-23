@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DATE_TABS, formatDueLabel, getDateBounds, matchesDateTab } from "@/lib/taskDates";
 
 const CATEGORY_LABEL = {
   school: "School",
@@ -23,18 +24,32 @@ async function api(url, opts) {
 
 export default function TaskList({ tasks, onChange }) {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("school");
+  const [category, setCategory] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [error, setError] = useState("");
   const [filter, setFilter] = useState("all");
+  const [dateTab, setDateTab] = useState("all");
 
   const addTask = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
+    if (!category && !dueDate) {
+      setError("Pick a category or a due date.");
+      return;
+    }
+    setError("");
     await api("/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, category }),
+      body: JSON.stringify({
+        title,
+        category: category || "school",
+        due_at: dueDate ? new Date(`${dueDate}T23:59:00`).toISOString() : null,
+      }),
     });
     setTitle("");
+    setCategory("");
+    setDueDate("");
     onChange();
   };
 
@@ -53,13 +68,16 @@ export default function TaskList({ tasks, onChange }) {
     onChange();
   };
 
-  const visible = tasks.filter((t) => filter === "all" || t.category === filter);
+  const bounds = getDateBounds();
+  const visible = tasks.filter(
+    (t) => (filter === "all" || t.category === filter) && matchesDateTab(t, dateTab, bounds)
+  );
   const open = visible.filter((t) => t.status !== "done");
   const done = visible.filter((t) => t.status === "done");
 
   return (
     <div className="flex-1 min-h-0 flex flex-col">
-      <div className="shrink-0 flex gap-1.5 mb-4 flex-wrap">
+      <div className="shrink-0 flex gap-1.5 mb-2 flex-wrap">
         {["all", "school", "outside", "college_prep"].map((f) => (
           <button
             key={f}
@@ -73,25 +91,49 @@ export default function TaskList({ tasks, onChange }) {
         ))}
       </div>
 
-      <form onSubmit={addTask} className="shrink-0 flex gap-2 mb-4">
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Add a task…"
-          className="flex-1 min-w-0 bg-white/70 border border-white/70 rounded-xl px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 outline-none focus:ring-2 focus:ring-violet-400"
-        />
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="shrink-0 bg-white/70 border border-white/70 rounded-xl px-2 py-2.5 text-xs text-ink-700"
-        >
-          <option value="school">School</option>
-          <option value="outside">Outside</option>
-          <option value="college_prep">College</option>
-        </select>
-        <button className="shrink-0 btn-primary rounded-xl px-5 py-2.5 text-sm font-display font-semibold">
-          Add
-        </button>
+      <div className="shrink-0 flex gap-1.5 mb-4 flex-wrap">
+        {DATE_TABS.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => setDateTab(id)}
+            className={`rounded-full px-3 py-1 text-[11px] font-medium transition ${
+              dateTab === id ? "bg-ink-900 text-white" : "chip text-ink-400 hover:text-ink-700"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={addTask} className="shrink-0 mb-4">
+        <div className="flex gap-2 flex-wrap">
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Add a task…"
+            className="flex-1 min-w-[8rem] bg-white/70 border border-white/70 rounded-xl px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 outline-none focus:ring-2 focus:ring-violet-400"
+          />
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="shrink-0 bg-white/70 border border-white/70 rounded-xl px-2 py-2.5 text-xs text-ink-700"
+          >
+            <option value="">Category…</option>
+            <option value="school">School</option>
+            <option value="outside">Outside</option>
+            <option value="college_prep">College</option>
+          </select>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            className="shrink-0 bg-white/70 border border-white/70 rounded-xl px-2 py-2.5 text-xs text-ink-700"
+          />
+          <button className="shrink-0 btn-primary rounded-xl px-5 py-2.5 text-sm font-display font-semibold">
+            Add
+          </button>
+        </div>
+        {error && <p className="text-coral-500 text-xs mt-1.5">{error}</p>}
       </form>
 
       <div className="flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto scrollbar-thin pr-1">
@@ -101,12 +143,12 @@ export default function TaskList({ tasks, onChange }) {
           </p>
         )}
         {open.map((task) => (
-          <TaskRow key={task.id} task={task} onToggle={toggleDone} onRemove={remove} />
+          <TaskRow key={task.id} task={task} bounds={bounds} onToggle={toggleDone} onRemove={remove} />
         ))}
         {done.length > 0 && (
           <div className="mt-2 pt-3 border-t border-white/70 flex flex-col gap-2">
             {done.map((task) => (
-              <TaskRow key={task.id} task={task} onToggle={toggleDone} onRemove={remove} done />
+              <TaskRow key={task.id} task={task} bounds={bounds} onToggle={toggleDone} onRemove={remove} done />
             ))}
           </div>
         )}
@@ -115,7 +157,8 @@ export default function TaskList({ tasks, onChange }) {
   );
 }
 
-function TaskRow({ task, onToggle, onRemove, done }) {
+function TaskRow({ task, bounds, onToggle, onRemove, done }) {
+  const dueLabel = formatDueLabel(task.due_at, bounds);
   return (
     <div className="task-row flex items-center gap-3 group px-3 py-2.5">
       <button
@@ -136,6 +179,15 @@ function TaskRow({ task, onToggle, onRemove, done }) {
           {task.title}
         </div>
       </div>
+      {dueLabel && !done && (
+        <span
+          className={`chip px-2 py-0.5 text-[10px] font-medium flex-shrink-0 ${
+            dueLabel === "Overdue" ? "text-coral-600" : "text-ink-500"
+          }`}
+        >
+          {dueLabel}
+        </span>
+      )}
       {task.source === "schoology" && (
         <span className="chip px-2 py-0.5 text-[10px] text-violet-600 font-medium flex-shrink-0">
           Schoology
