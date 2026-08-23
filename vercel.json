@@ -3,6 +3,10 @@
     {
       "path": "/api/messages/sync",
       "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/schoology-ics-sync",
+      "schedule": "0 14 * * *"
     }
   ]
 }

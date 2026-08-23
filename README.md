@@ -203,23 +203,54 @@ bypass window (`settings.youtube_bypass_until` in Supabase) that
 `/api/session-state` excludes from the blocked list while active, for
 when you actually need a YouTube video for studying.
 
-## Weekly Schoology update via ChatGPT
+## Automatic Schoology sync
 
-No Schoology API access, so this is a manual bridge: two deliberately
-**unauthenticated** pages (fine — nobody else knows this URL, and the
-blast radius of someone finding it is "fake homework tasks appear").
+Schoology publishes a private iCal feed of your assignments (Schoology →
+Settings → Calendar → **Subscribe**, gives you a `webcal://…/ical.ics`
+link) — the app fetches and parses that directly, no login or scraping
+needed, so tasks stay in sync with zero manual work.
+
+1. In Schoology, go to **Settings → Calendar → Subscribe** and copy the
+   `webcal://` link it gives you.
+2. In Vercel, add `SCHOOLOGY_ICS_URL` with that value (paste it exactly
+   as `webcal://…` — the app converts it to `https://` itself), then
+   redeploy. **Treat this link like a secret** — anyone with it can read
+   your assignment calendar — so only ever add it as a Vercel environment
+   variable, never commit it to the repo (it's public).
+3. `vercel.json` runs `/api/schoology-ics-sync` once a day (Hobby plan
+   limit, same as the Gmail sync). Each run:
+   - Deletes any *open* Schoology-sourced task that isn't tracked by a
+     stable feed ID yet — this is a one-time cleanup the first time it
+     runs, clearing out anything from the old manual-paste flow below so
+     it doesn't sit there duplicating what the feed now tracks.
+   - Upserts every assignment due within the last 2 weeks through the
+     next 6 months, keyed by the feed's own event ID — re-running never
+     creates duplicates, and it won't touch a task once you've marked it
+     done, even if Schoology later changes that assignment's title or
+     date.
+   - Never deletes a completed task, and never touches a task from
+     another source (`manual`, `calendar`).
+
+Recurring assignments aren't expanded (Schoology's feed doesn't use
+recurrence for individual assignments, so this hasn't come up) and the
+feed itself is Schoology's, not something this app can control the
+contents of.
+
+### Manual fallback (no feed URL set up)
+
+If you'd rather not use the feed, two deliberately **unauthenticated**
+pages still work as a manual bridge (fine — nobody else knows this URL,
+and the blast radius of someone finding it is "fake homework tasks
+appear"):
 
 - **https://focuscenter.vercel.app/view** — plain read-only dump
-  of every current task, sleep times, SAT dates, and deadlines. Check
-  here first so an update doesn't duplicate what's already there.
+  of every current task, sleep times, SAT dates, and deadlines.
 - **https://focuscenter.vercel.app/input** — a form with one
   textarea. Paste one task per line as `Title | YYYY-MM-DD` (date
   optional) and submit. This **replaces** all currently-open
-  Schoology-sourced tasks with the pasted list — anything already marked
-  done is left alone, so it's safe to run every week without piling up
-  stale duplicates.
+  Schoology-sourced tasks with the pasted list.
 
-Prompt to hand ChatGPT (with browsing/agent capability) for a weekly run:
+Prompt to hand ChatGPT (with browsing/agent capability) for a manual run:
 
 > Log into Schoology and list my current open assignments with their due
 > dates. Then go to https://focuscenter.vercel.app/view and check
