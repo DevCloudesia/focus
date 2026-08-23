@@ -78,18 +78,18 @@ export default function TaskList({ tasks, onChange }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Add a task…"
-          className="flex-1 bg-white/70 border border-white/70 rounded-xl px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 outline-none focus:ring-2 focus:ring-violet-400"
+          className="flex-1 min-w-0 bg-white/70 border border-white/70 rounded-xl px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 outline-none focus:ring-2 focus:ring-violet-400"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="bg-white/70 border border-white/70 rounded-xl px-2 py-2.5 text-xs text-ink-700"
+          className="shrink-0 bg-white/70 border border-white/70 rounded-xl px-2 py-2.5 text-xs text-ink-700"
         >
           <option value="school">School</option>
           <option value="outside">Outside</option>
           <option value="college_prep">College</option>
         </select>
-        <button className="btn-primary rounded-xl px-5 py-2.5 text-sm font-display font-semibold">
+        <button className="shrink-0 btn-primary rounded-xl px-5 py-2.5 text-sm font-display font-semibold">
           Add
         </button>
       </form>

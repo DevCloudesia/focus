@@ -9,7 +9,7 @@ export default function MotivationStrip() {
   const quote = useMemo(() => getRandomQuote(), []);
 
   return (
-    <div className="card p-6 justify-center bg-gradient-to-br from-violet-100 via-white to-coral-100">
+    <div className="card card-auto p-5 justify-center bg-gradient-to-br from-violet-100 via-white to-coral-100">
       <p className="font-display font-medium text-ink-900 text-lg leading-snug">"{quote}"</p>
     </div>
   );

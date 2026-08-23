@@ -73,7 +73,7 @@ export default function SleepWidget({ settings, onSettingsChange }) {
   };
 
   return (
-    <div id="sleep" className="card p-6 justify-center">
+    <div id="sleep" className="card card-auto p-6 justify-center">
       <div className="flex items-center justify-between mb-1">
         <h3 className="font-display font-semibold text-base text-ink-900">Sleep</h3>
         <span className="chip rounded-full px-2 py-0.5 text-[10px] text-ink-500 font-medium">

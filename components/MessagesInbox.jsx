@@ -52,11 +52,13 @@ export default function MessagesInbox() {
   };
 
   return (
-    <div className="card p-5">
+    <div className="card card-auto p-5">
       <h3 className="shrink-0 font-display font-semibold text-base text-ink-900 mb-3">
         While You Were Focused ({unseen.length})
       </h3>
-      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin flex flex-col gap-2 pr-1">
+      {/* Capped so a big unread pile doesn't crowd out Sound below it —
+          scrolls internally past that. */}
+      <div className="max-h-56 overflow-y-auto scrollbar-thin flex flex-col gap-2 pr-1">
         {unseen.map((m) => (
           <div key={m.id} className="flex items-start gap-2 text-sm">
             <span className="chip px-2 py-0.5 text-[10px] text-ink-500 font-medium flex-shrink-0 mt-0.5">

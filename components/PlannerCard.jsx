@@ -13,7 +13,7 @@ export default function PlannerCard({ tasks, onTasksChange, weekend }) {
   const setTab = setManualTab;
 
   return (
-    <div className="card p-6">
+    <div className="card flex-1 min-h-0 p-6">
       <div className="shrink-0 flex items-center gap-1 mb-4 chip rounded-full p-1 w-fit">
         <button
           onClick={() => setTab("tasks")}

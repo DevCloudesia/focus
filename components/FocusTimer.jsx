@@ -54,7 +54,7 @@ export default function FocusTimer({
 
   if (!session) {
     return (
-      <div className="card p-4 sm:p-5 flex flex-col items-center justify-center gap-2.5 text-center relative overflow-y-auto">
+      <div className="card card-auto p-4 sm:p-5 flex flex-col items-center justify-center gap-2.5 text-center relative overflow-y-auto">
         <div
           className="absolute -top-24 -right-24 w-64 h-64 rounded-full opacity-60 blur-3xl pointer-events-none"
           style={{ background: "radial-gradient(circle, #FFE4DA 0%, transparent 70%)" }}
@@ -91,7 +91,7 @@ export default function FocusTimer({
   const copy = PHASE_COPY[phase] || PHASE_COPY.working;
 
   return (
-    <div className="card p-4 sm:p-5 flex flex-col items-center justify-center gap-2.5 text-center overflow-y-auto">
+    <div className="card card-auto p-4 sm:p-5 flex flex-col items-center justify-center gap-2.5 text-center overflow-y-auto">
       <div className={`text-xs uppercase tracking-wide font-semibold shrink-0 ${copy.tone}`}>{copy.label}</div>
       <div className="font-mono-num font-semibold text-4xl sm:text-5xl text-ink-900 shrink-0">{formatClock(remainingSec)}</div>
       <div className="w-full max-w-sm h-2 rounded-full bg-paper-200 overflow-hidden shrink-0">

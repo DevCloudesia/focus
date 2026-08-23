@@ -158,37 +158,31 @@ body {
   transition: background 0.8s ease;
 }
 
-/* Bento dashboard: calendar is a wide, full-height center column; the rest
-   sit in two side columns as paired tiles, sized by fr so every tile gets
-   a sane aspect ratio instead of a narrow, content-shrunk sliver. Below
-   lg it collapses to a normal stacked, page-scrolling column — no fixed
-   height there, a phone/tablet is never trying to be "one page". */
+/* Bento dashboard: calendar is a wide, full-height center column. Each
+   side is its OWN flex column (not shared grid rows across both sides) —
+   that's deliberate: it lets e.g. Sound claim whatever room Messages
+   isn't using on the left, and Planner claim whatever Motivation isn't
+   using on the right, without an empty Messages card forcing Sound short
+   just because they used to sit in the same grid row as their opposite
+   numbers. Below lg it collapses to a normal stacked, page-scrolling
+   column — no fixed height there, a phone/tablet is never trying to be
+   "one page". */
 .orbit-grid {
   display: grid;
   gap: 1.25rem;
   grid-template-columns: 1fr;
   grid-template-areas:
     "calendar"
-    "timer"
-    "sound"
-    "messages"
-    "sleep"
-    "motivation"
-    "planner";
+    "left"
+    "right";
 }
 
 @media (min-width: 1152px) {
   .orbit-grid {
     height: 100%;
     grid-template-columns: 1.15fr 2fr 1.15fr;
-    /* Sound got a bigger share (was 1fr) to make room for the full-size
-       Spotify embed (352px) — it was previously squeezed down to
-       Spotify's compact bar with a lot of dead space below it. */
-    grid-template-rows: 1.4fr 1.4fr 1.4fr;
-    grid-template-areas:
-      "timer    calendar  sleep"
-      "sound    calendar  motivation"
-      "messages calendar  planner";
+    grid-template-rows: 1fr;
+    grid-template-areas: "left calendar right";
   }
 }
 
@@ -196,29 +190,21 @@ body {
   grid-area: calendar;
   min-height: 0;
 }
-.area-timer {
-  grid-area: timer;
+.area-left {
+  grid-area: left;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-y: auto;
 }
-.area-sound {
-  grid-area: sound;
+.area-right {
+  grid-area: right;
   min-height: 0;
-}
-.area-messages {
-  grid-area: messages;
-  min-height: 0;
-}
-.area-sleep {
-  grid-area: sleep;
-  min-height: 0;
-}
-.area-planner {
-  grid-area: planner;
-  min-height: 0;
-}
-.area-motivation {
-  grid-area: motivation;
-  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-y: auto;
 }
 
 /* Task rows */

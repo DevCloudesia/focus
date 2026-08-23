@@ -145,11 +145,7 @@ export default function Dashboard() {
         </div>
 
         <div className="orbit-grid flex-1 min-h-0">
-          <div className="area-calendar orbit-center">
-            <CalendarPanel settings={settings} />
-          </div>
-
-          <div className="area-timer">
+          <div className="area-left">
             <FocusTimer
               session={session}
               weekend={weekend}
@@ -160,31 +156,35 @@ export default function Dashboard() {
               onAbandon={abandon}
               onCrash={() => setCrashOpen(true)}
             />
-          </div>
 
-          <div className="area-sound flex flex-col min-h-0 overflow-y-auto">
-            <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
-          </div>
+            {/* Sound is the one thing on this side that soaks up whatever
+                room Messages isn't using — its own content is a fixed-size
+                embed, so this mostly just keeps the column looking
+                balanced instead of leaving a gap after Messages. */}
+            <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
+              <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
+            </div>
 
-          <div className="area-messages">
             {isBreakOrIdle ? (
               <MessagesInbox />
             ) : (
-              <div className="card p-5 items-center justify-center text-center text-sm text-ink-400">
+              <div className="card card-auto p-5 items-center justify-center text-center text-sm text-ink-400">
                 Messages stay quiet during a session.
               </div>
             )}
           </div>
 
-          <div className="area-sleep">
+          <div className="area-calendar orbit-center">
+            <CalendarPanel settings={settings} />
+          </div>
+
+          <div className="area-right">
             <SleepWidget settings={settings} onSettingsChange={setSettings} />
-          </div>
-
-          <div className="area-motivation">
             <MotivationStrip />
-          </div>
-
-          <div className="area-planner">
+            {/* Planner is the absorber on this side — Sleep and the quote
+                only ever need their own content's worth of room, so tasks
+                get everything left over instead of being squeezed to
+                match however tall the quote happens to be. */}
             <PlannerCard tasks={tasks} onTasksChange={refreshTasks} weekend={weekend} />
           </div>
         </div>
