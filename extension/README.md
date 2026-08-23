@@ -2,17 +2,17 @@
 
 Three jobs:
 
-1. **Site blocking** — while an active *work* session is running in your
-   focus app (weekends default to review sessions, which this leaves
-   unblocked, per how the app's weekend mode works), it redirects any
-   domain in your Settings → Blocked sites list (fixed to just
-   `youtube.com`) to a small "you're focused" page.
-2. **The study bypass, right on the blocked page** — that page has its own
-   "hold 5s to unlock YouTube" button. Holding it calls the app's
-   `/api/youtube-bypass` directly, opens a 90-minute window, and tells the
-   background worker to rebuild its rules immediately (not on the next
-   ~20s poll), then hands you a link to YouTube. No detour through the
-   dashboard needed.
+1. **Site blocking** — while any session is actively running in your focus
+   app (work or review, weekday or weekend), it redirects any domain in
+   your Settings → Blocked sites list (fixed to `youtube.com`,
+   `instagram.com`, `nytimes.com`) to a small "you're focused" page.
+2. **The study bypass, right on the blocked page** — YouTube specifically
+   also gets a "hold 5s to unlock" button right there (Instagram/NYT don't
+   — no legitimate study reason to unlock those mid-session). Holding it
+   calls the app's `/api/youtube-bypass` directly, opens a 90-minute
+   window, and tells the background worker to rebuild its rules
+   immediately (not on the next ~20s poll), then hands you a link to
+   YouTube. No detour through the dashboard needed.
 3. **Schoology sync** — on any `schoology.com` page, adds a floating
    "Sync to Focus App" button that scrapes visible assignment titles/due
    dates and posts them into your task list.

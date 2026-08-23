@@ -8,12 +8,19 @@ const btn = document.getElementById("unlock-btn");
 const fill = document.getElementById("unlock-fill");
 const label = document.getElementById("unlock-label");
 const hint = document.getElementById("hint");
+const blockedCopy = document.getElementById("blocked-copy");
 const blockedView = document.getElementById("blocked-view");
 const unlockedView = document.getElementById("unlocked-view");
 
 let raf = null;
 let start = 0;
 let holding = false;
+
+// Which domain redirected here — set by background.js as a query param so
+// this page knows whether to offer the bypass. Only YouTube has one;
+// Instagram/NYT etc. are just blocked outright during a session.
+const site = new URLSearchParams(location.search).get("site") || "";
+const isYoutube = /(^|\.)youtube\.com$/.test(site);
 
 function getConfig() {
   return new Promise((resolve) => {
@@ -22,6 +29,13 @@ function getConfig() {
 }
 
 async function init() {
+  if (!isYoutube) {
+    blockedCopy.textContent = "This site is blocked until your session ends. Back to it in a bit.";
+    return; // button stays hidden — no bypass for this one
+  }
+  btn.style.display = "";
+  blockedCopy.textContent = "This site is blocked until your session ends. If it's for real studying, hold the button below.";
+
   const { appUrl } = await getConfig();
   if (!appUrl) {
     btn.disabled = true;

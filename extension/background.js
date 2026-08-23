@@ -1,6 +1,5 @@
-// Polls the focus app's /api/session-state every ~20s. When a work
-// session is actively running (not "review" — weekends default to review,
-// so this naturally loosens up there per the app's rules), it installs
+// Polls the focus app's /api/session-state every ~20s. Whenever a session
+// is actively running — work or review, weekday or weekend — it installs
 // declarativeNetRequest rules that redirect the configured blocked sites
 // to blocked.html. Rules are torn down the moment the session isn't active.
 
@@ -37,14 +36,19 @@ async function applyRules(state) {
     await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: existingIds });
   }
 
-  const shouldBlock = state && state.active && state.session_type === "work";
+  const shouldBlock = state && state.active;
   if (!shouldBlock || !state.blocked_sites?.length) return;
 
-  const redirectUrl = chrome.runtime.getURL("blocked.html");
   const rules = state.blocked_sites.slice(0, 100).map((domain, i) => ({
     id: RULE_ID_BASE + i,
     priority: 1,
-    action: { type: "redirect", redirect: { url: redirectUrl } },
+    // Pass which domain triggered the block as a query param — blocked.js
+    // uses it to only show the hold-5s unlock for youtube.com, since
+    // that's the only site with a bypass.
+    action: {
+      type: "redirect",
+      redirect: { url: `${chrome.runtime.getURL("blocked.html")}?site=${encodeURIComponent(domain)}` },
+    },
     condition: {
       urlFilter: `||${domain.replace(/^https?:\/\//, "").replace(/\/$/, "")}`,
       resourceTypes: ["main_frame"],
