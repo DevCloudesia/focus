@@ -34,36 +34,58 @@ function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-// Spotify's "full" embed size — see the comment on createController below.
-const PLAYER_HEIGHT = 352;
+// Spotify's compact bar kicks in below this — never ask for less.
+const MIN_PLAYER_HEIGHT = 152;
+// Ignore sub-pixel/noise-level resize events; only rebuild the embed for a
+// change big enough to matter (e.g. Messages above it collapsing/expanding).
+const RESIZE_THRESHOLD = 24;
 
 export default function MusicPanel({ mode, onModeChange }) {
+  const boxRef = useRef(null);
   const mountRef = useRef(null);
   const controllerRef = useRef(null);
   const [playlist, setPlaylist] = useState(() => pickRandom(PLAYLISTS[mode]));
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
+  const [height, setHeight] = useState(0);
 
   // New random playlist from the mode's pool each time mode changes.
   useEffect(() => {
     setPlaylist(pickRandom(PLAYLISTS[mode]));
   }, [mode]);
 
-  // Create the controller once.
+  // Spotify's embed doesn't support fluid/percentage heights — it needs an
+  // explicit pixel number, and taller values don't just stretch the same
+  // compact bar, they show more of the track list. So instead of guessing
+  // a fixed size, measure how much room the box actually has (which
+  // dashboard layout already decides — see .area-left in globals.css) and
+  // ask Spotify for exactly that.
   useEffect(() => {
+    if (!boxRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      const h = Math.round(entries[0].contentRect.height);
+      setHeight((prev) => (Math.abs(prev - h) > RESIZE_THRESHOLD ? h : prev));
+    });
+    observer.observe(boxRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // (Re)build the controller whenever the measured height actually moves —
+  // the API has no resize call, so a real size change means tearing down
+  // and recreating at the new size. Preserves play state across a rebuild.
+  useEffect(() => {
+    if (!height || height < MIN_PLAYER_HEIGHT || !mountRef.current) return;
     let cancelled = false;
+    const resumePlaying = playing;
+
     loadSpotifyIframeApi().then((IFrameAPI) => {
-      if (cancelled || !IFrameAPI || !mountRef.current) return;
+      if (cancelled || !mountRef.current) return;
+      controllerRef.current?.destroy?.();
+      mountRef.current.replaceChildren();
+      setReady(false);
       IFrameAPI.createController(
         mountRef.current,
-        // Spotify's embed doesn't support fluid/percentage heights — it
-        // only renders in a couple of fixed size classes. 100% was being
-        // silently ignored, so it fell back to the compact bar while its
-        // container stayed tall, leaving a big dead gap. 352 is the "full"
-        // size: bigger art, a track list, and — unlike the compact bar —
-        // Spotify's own shuffle control, so you can actually shuffle the
-        // playlist instead of it always playing the same track order.
-        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height: PLAYER_HEIGHT },
+        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height },
         (controller) => {
           if (cancelled) return;
           controllerRef.current = controller;
@@ -71,16 +93,18 @@ export default function MusicPanel({ mode, onModeChange }) {
           controller.addListener("playback_update", (e) => {
             setPlaying(!e.data.isPaused);
           });
+          if (resumePlaying) controller.play();
         }
       );
     });
+
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- controller created once
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only rebuild on real size changes
+  }, [height]);
 
-  // Swap tracks on an existing controller instead of re-mounting the iframe.
+  // Swap tracks on an existing controller instead of rebuilding it.
   useEffect(() => {
     if (!ready || !controllerRef.current) return;
     controllerRef.current.loadUri(`spotify:playlist:${playlist.id}`);
@@ -96,7 +120,7 @@ export default function MusicPanel({ mode, onModeChange }) {
   };
 
   return (
-    <div className="shrink-0 flex flex-col gap-2">
+    <div className="flex flex-col gap-2 h-full min-h-0">
       {/* Mode toggle lives above the player, not on top of it — Spotify's
           own embed already uses its corners for its own controls (like,
           more, external link), so overlaying there collides with them. */}
@@ -121,12 +145,9 @@ export default function MusicPanel({ mode, onModeChange }) {
         </div>
       </div>
 
-      {/* Height matches PLAYER_HEIGHT exactly — no flex-stretch here, or
-          the box ends up taller than the iframe Spotify actually renders,
-          which is exactly the empty-gap bug this replaces. */}
       <div
-        className="relative rounded-[1.75rem] overflow-hidden shrink-0 border border-white/40 shadow-[0_8px_32px_-12px_rgba(88,60,180,0.22)]"
-        style={{ height: PLAYER_HEIGHT }}
+        ref={boxRef}
+        className="relative rounded-[1.75rem] overflow-hidden flex-1 min-h-[152px] border border-white/40 shadow-[0_8px_32px_-12px_rgba(88,60,180,0.22)]"
       >
         <div ref={mountRef} className="absolute inset-0" />
 
