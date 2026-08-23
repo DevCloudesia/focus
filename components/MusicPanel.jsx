@@ -34,6 +34,9 @@ function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+// Spotify's "full" embed size — see the comment on createController below.
+const PLAYER_HEIGHT = 352;
+
 export default function MusicPanel({ mode, onModeChange }) {
   const mountRef = useRef(null);
   const controllerRef = useRef(null);
@@ -53,7 +56,14 @@ export default function MusicPanel({ mode, onModeChange }) {
       if (cancelled || !IFrameAPI || !mountRef.current) return;
       IFrameAPI.createController(
         mountRef.current,
-        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height: "100%" },
+        // Spotify's embed doesn't support fluid/percentage heights — it
+        // only renders in a couple of fixed size classes. 100% was being
+        // silently ignored, so it fell back to the compact bar while its
+        // container stayed tall, leaving a big dead gap. 352 is the "full"
+        // size: bigger art, a track list, and — unlike the compact bar —
+        // Spotify's own shuffle control, so you can actually shuffle the
+        // playlist instead of it always playing the same track order.
+        { uri: `spotify:playlist:${playlist.id}`, width: "100%", height: PLAYER_HEIGHT },
         (controller) => {
           if (cancelled) return;
           controllerRef.current = controller;
@@ -86,7 +96,7 @@ export default function MusicPanel({ mode, onModeChange }) {
   };
 
   return (
-    <div className="flex-1 min-h-[150px] shrink-0 flex flex-col gap-2">
+    <div className="shrink-0 flex flex-col gap-2">
       {/* Mode toggle lives above the player, not on top of it — Spotify's
           own embed already uses its corners for its own controls (like,
           more, external link), so overlaying there collides with them. */}
@@ -111,7 +121,13 @@ export default function MusicPanel({ mode, onModeChange }) {
         </div>
       </div>
 
-      <div className="relative rounded-[1.75rem] overflow-hidden flex-1 min-h-[110px] border border-white/40 shadow-[0_8px_32px_-12px_rgba(88,60,180,0.22)]">
+      {/* Height matches PLAYER_HEIGHT exactly — no flex-stretch here, or
+          the box ends up taller than the iframe Spotify actually renders,
+          which is exactly the empty-gap bug this replaces. */}
+      <div
+        className="relative rounded-[1.75rem] overflow-hidden shrink-0 border border-white/40 shadow-[0_8px_32px_-12px_rgba(88,60,180,0.22)]"
+        style={{ height: PLAYER_HEIGHT }}
+      >
         <div ref={mountRef} className="absolute inset-0" />
 
         {ready && !playing && (

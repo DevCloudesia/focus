@@ -162,7 +162,7 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="area-sound flex flex-col min-h-0">
+          <div className="area-sound flex flex-col min-h-0 overflow-y-auto">
             <MusicPanel mode={musicMode} onModeChange={setMusicMode} />
           </div>
 
