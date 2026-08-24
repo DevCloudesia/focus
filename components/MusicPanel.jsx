@@ -19,7 +19,44 @@ const PLAYLISTS = {
 // reshuffling into a new order every time it loops. Leave a mode's array
 // empty to fall back to the playlist embed above for that mode.
 const TRACKS = {
-  ambient: [],
+  // "Deep Focus" — 100 tracks, shuffled locally and auto-advanced instead
+  // of relying on Spotify's (unshuffleable) playlist embed order.
+  ambient: [
+    "2i6veFyjDIodH3hgpkwxK6", "51vxIDnFJOzotXLQTrwV29", "06mrX3LFC65jmule6OhXrC",
+    "49ROoo6OTD33xLWZPeh3Kl", "5nioi5Jwzu1ErjdrOLl8r9", "74d5BwGv2aVkTTEWcThDH7",
+    "2nuZoD3ERht1tiGXEF07ID", "4NaokS7WwvNDq1tIozGscA", "5o4nq8COdxn8JSiiRDlBEm",
+    "6wtv3qegbBuAiQUSSwaUOk", "70mz7EZIeuuJQhbaalhype", "4tEdMG485b8naFRVOasiKD",
+    "7EU3GnKCtWjioafUOxAQbW", "3QjclgXtJSvC02OllPVyif", "3QNxNH5D9zoIi2nScaGy7B",
+    "2xG1a1llDkt9zAxmQ5ZRjs", "1ahSsvP2Eaqj0vOeCzD2xB", "2oNxKv820tRrC1RfZKe6d7",
+    "3ASg4DxjvGRWOLEiPParOv", "63F6wD0lnbuafVE0a7RTfx", "1TekhCzRDYCZCtXKdnP1ed",
+    "3OkelC3Xo9f1GAb1aKPqLH", "75pMP3L6TWt6SGUI5emumo", "49NriqKnMRAfZqON99Ka3H",
+    "7DZS6XrvgdYknhXpDAQNCR", "0JNlXzO2SDzd6H8NCUXcI9", "1SLoFm1ss9bO4QH1667q9c",
+    "4Mf6b6czvrwEaUVq92NaPM", "0o15tYOOLf8EEfBIA6Rn7A", "5VthgXmQbLAvk8A4kYaDjd",
+    "2U9oMk1CsE22E9Ep1HwuwK", "5MyJqrHfrSmb9056z1HZDm", "2udLAfjjsxMgsfcxjZag4g",
+    "1nk89wBnTJdOTWgDHu4nyJ", "1ujFw7NVM3AZz9OQ59QVzz", "4xXz0UGjX2a9tcRumCq31G",
+    "3EScDMhUqZQDfLhjk9bCY8", "4n4748iFE6wYC78HmfJ4qn", "7gLSmYiMlyce5EdW59ML5P",
+    "3LoFjJPs1qXJMtMwPb3pgX", "3rambsaaSGNgu4vQLEZjnq", "4B6Nriqk08YIv2qQl5f9Cn",
+    "15KmvdXXZzuTQWvLGdehy8", "4Mn6I30vdz2P2IIWY27Y7a", "2Fp6Fp3ZAp9cWu8n1S1lOe",
+    "6OcA7JNKCWzvwJ54lKPAE2", "5KozKBGrvgLyxEDRb8VBHj", "0OO6az6OHaz25aL2f55HYK",
+    "5juvEWHNyQR3oGwNTdtxVp", "2RWYlwtLt6Li6EIRpDQwwD", "1gRgYigye8TN8lvTZqsy6T",
+    "58QP0MsCeTVXPB0l3KwQwj", "5gVmCVexOGpl7R3nv9FXgO", "38AKv3z5kTzFFM2YC793Gg",
+    "6oWl6FWS8pgOTO4eiyeHOU", "7fY5kC7uPokZ65AmCspMPG", "5pbFcxsk67rhX8zEchANwL",
+    "34cI9Qb1fmz2eeckSmK0UC", "42mYchzaeeaeWYmJsXkcNI", "3OQfTzeOgTYXoU54tPmjeX",
+    "7IdeZbJRDzOfrrPIbeYCMB", "4j8rE614m83LqsDgyawG37", "4PzZL6wwpjsIsF61JkE55L",
+    "0HgUXqHkrnXpbBRcYQFPMT", "0XgVrpQpHzP017r9QRDo8O", "2p5DZJz5oQNv7MHuTtf22U",
+    "3PB2lyHUcROeUIqr1607xM", "099WpHvgNrPDQjiCOHUtVO", "64H8HNpvYyCStmxaloLGKr",
+    "3FB2F6N9sPCa8hYXUih5yK", "3fu89sPz9Ueztam8X5LCix", "42rdhHFIkfhtEs9XFA84HV",
+    "5BP6c4rMEbUh1PJ1fRKE2W", "3eJOUAHNk36uNoj6CkdMzD", "1ctz9vfbGpAElwDirHPfW1",
+    "10IH5PpKAGlCxq3kaWtma2", "4qwon6fjE46SvSkjBR7zdN", "1bLY3NiioTiDQu4AvFXjkx",
+    "07KfFPBzpGkBNnsDKcg7o1", "4lrFgtRpnsM6g6UMvlBNWX", "4JVGIimjO5YX69iSHgeQ2Q",
+    "7bKsMY05k1AdKvcfm4mb1N", "38rzVA7mV31aPnrZveIylU", "7ordWQrqw84ItDWGQxiipt",
+    "5JwPU1V6ntfbFsLkrP8UUy", "4349osx2k9x1bfw40VQ3La", "16TVo5vkdsQXql3BrBtVbw",
+    "2ix4SDjesnxZZVi5maF1Y0", "4eeuYnDJ5XlzgVYs2FGhbl", "3vlH3jF3F8S474kLFBq1q1",
+    "3TN9vDMUVCFNa7nTOyog6V", "1kEY2FnLcXnrmIsUnFVOmV", "6y4xDmb8LoxFPB1MELrjWU",
+    "40EgJRa4j4V6K9KLxtGEJu", "5EeQp151LyR5r9ZORe5oEy", "2sDLddDUikRmarSrWxXo4s",
+    "2DPybnlPtXRZYgjY3SE6Rk", "1TLSXpB0BsyxfUpHsGtMo8", "0tYU71tIRF49B4i0qxU5v7",
+    "4A853RsGDBIk95ZwinfguK",
+  ],
   "40hz": [],
 };
 
